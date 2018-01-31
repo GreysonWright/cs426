@@ -13,7 +13,7 @@
 #include <ctype.h>
 #define MAX_LINE 80 /* The maximum length command */
 
-char *readToken(char *);
+void readArgs(char **);
 
 int main(void) {
 	char *args[MAX_LINE / 2 + 1];
@@ -23,18 +23,12 @@ int main(void) {
 		printf("osh>");
 		fflush(stdout);
 		
-		char *str = malloc(MAX_LINE + 1);
-		fgets(str, MAX_LINE, stdin);
-		
-		char *token = strtok(str, " \n");
-		int count = 0;
-		while (token) {
-			args[count++] = token;
-			token = strtok(0, " \n");
-		}
+		readArgs(args);
 		
 		if (!strcmp(args[0], "exit")) {
 			should_run = 0;
+		} else {
+			
 		}
 		/**
 		 * After reading user input, the steps are:
@@ -45,4 +39,14 @@ int main(void) {
 	return 0;
 }
 
-
+void readArgs(char **args) {
+	char *str = malloc(MAX_LINE + 1);
+	fgets(str, MAX_LINE, stdin);
+	
+	char *token = strtok(str, " \n");
+	int count = 0;
+	while (token) {
+		args[count++] = token;
+		token = strtok(0, " \n");
+	}
+}
