@@ -17,6 +17,7 @@
 
 void readArgs(char **);
 void runArgs(char **);
+void processString(char *, char **);
 int findAmpersand(char **);
 
 int main(void) {
@@ -40,7 +41,10 @@ int main(void) {
 void readArgs(char **args) {
 	char *str = malloc(MAX_LINE + 1);
 	fgets(str, MAX_LINE, stdin);
-	
+	processString(str, args);
+}
+
+void processString(char *str, char **args) {
 	char *token = strtok(str, " \n");
 	int count = 0;
 	while (token) {
@@ -59,14 +63,12 @@ void runArgs(char **args) {
 	} else if (pid == 0) {
 		int index = findAmpersand(args);
 		if (index != -1) {
-			printf("test\n");
 			args[index - 1] = 0;
 		}
 		
 		execvp(args[0], args);
 	} else if (pid > 0) {
 		if (findAmpersand(args) != -1) {
-			printf("wait\n");
 			wait(0);
 		}
 	}
