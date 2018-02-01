@@ -17,6 +17,7 @@
 
 void readArgs(char **);
 void runArgs(char **);
+int findAmpersand(char **);
 
 int main(void) {
 	char *args[MAX_LINE / 2 + 1];
@@ -27,17 +28,11 @@ int main(void) {
 		fflush(stdout);
 		
 		readArgs(args);
-		
 		if (!strcmp(args[0], "exit")) {
 			should_run = 0;
 		} else {
 			runArgs(args);
 		}
-		/**
-		 * After reading user input, the steps are:
-		 * (1) fork a child process using fork()
-		 * (2) the child process will invoke execvp()
-		 * (3) if command included &, parent will invoke wait() */
 	}
 	return 0;
 }
@@ -62,8 +57,28 @@ void runArgs(char **args) {
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
+		int index = findAmpersand(args);
+		if (index != -1) {
+			printf("test\n");
+			args[index - 1] = 0;
+		}
+		
 		execvp(args[0], args);
 	} else if (pid > 0) {
-		wait(0);
+		if (findAmpersand(args) != -1) {
+			printf("wait\n");
+			wait(0);
+		}
 	}
+}
+
+int findAmpersand(char **args) {
+	int counter = 0;
+	while (args[counter]) {
+		if (strstr(args[counter++], "&")) {
+			return counter;
+		}
+	}
+	
+	return -1;
 }
