@@ -8,12 +8,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 #define MAX_LINE 80 /* The maximum length command */
 
 void readArgs(char **);
+void runArgs(char **);
 
 int main(void) {
 	char *args[MAX_LINE / 2 + 1];
@@ -28,7 +31,7 @@ int main(void) {
 		if (!strcmp(args[0], "exit")) {
 			should_run = 0;
 		} else {
-			
+			runArgs(args);
 		}
 		/**
 		 * After reading user input, the steps are:
@@ -48,5 +51,19 @@ void readArgs(char **args) {
 	while (token) {
 		args[count++] = token;
 		token = strtok(0, " \n");
+	}
+	args[count] = 0;
+}
+
+void runArgs(char **args) {
+	pid_t pid = 0;
+	
+	pid = fork();
+	if (pid < 0) {
+		fprintf(stderr, "Fork Failed\n");
+	} else if (pid == 0) {
+		execvp(args[0], args);
+	} else if (pid > 0) {
+		wait(0);
 	}
 }
