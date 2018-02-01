@@ -31,7 +31,11 @@ int main(void) {
 		readArgs(args);
 		if (!strcmp(args[0], "exit")) {
 			should_run = 0;
-		} else {
+		} else if (!strcmp(args[0], "!!")) {
+			
+		} else if (strstr(args[0], "!")) {
+			
+		}  else {
 			runArgs(args);
 		}
 	}
