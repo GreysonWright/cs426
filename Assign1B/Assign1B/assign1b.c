@@ -13,43 +13,53 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include "stack.h"
 #define MAX_LINE 80 /* The maximum length command */
 
-void readArgs(char **);
+char *readArgs(char **);
 void runArgs(char **);
 void processString(char *, char **);
 int findAmpersand(char **);
 
+stack *historyStack;
+
 int main(void) {
 	char *args[MAX_LINE / 2 + 1];
 	int should_run = 1;
+	historyStack = newStack(0);
 	
 	while (should_run) {
 		printf("osh>");
 		fflush(stdout);
 		
-		readArgs(args);
+		char *input = readArgs(args);
 		if (!strcmp(args[0], "exit")) {
 			should_run = 0;
 		} else if (!strcmp(args[0], "!!")) {
-			
+			char *lastInput = peekStack(historyStack);
+			processString(lastInput, args);
+			runArgs(args);
 		} else if (strstr(args[0], "!")) {
 			
 		}  else {
+			push(historyStack, input);
 			runArgs(args);
 		}
 	}
 	return 0;
 }
 
-void readArgs(char **args) {
+char *readArgs(char **args) {
 	char *str = malloc(MAX_LINE + 1);
 	fgets(str, MAX_LINE, stdin);
 	processString(str, args);
+	return str;
 }
 
 void processString(char *str, char **args) {
-	char *token = strtok(str, " \n");
+	char *newString = malloc(MAX_LINE + 1);
+	strcpy(newString, str);
+	char *token = strtok(newString, " \n");
 	int count = 0;
 	while (token) {
 		args[count++] = token;
