@@ -42,6 +42,8 @@ int main(void) {
 			if (lastInput) {
 				processString(lastInput, args);
 				runArgs(args);
+			} else {
+				printf("No commands in history.\n");
 			}
 		} else if (strstr(args[0], "!")) {
 			int parsedInt = parseInt(input);
@@ -67,26 +69,10 @@ int main(void) {
 				}
 				processString(command, args);
 				runArgs(args);
+			} else {
+				printf("No such command in history.\n");
 			}
-		} else if (!strcmp(args[0], "history")) {
-			stack *tmpStack = newStack(0);
-			int n = min(sizeStack(historyStack), 10);
-			int historySize = sizeStack(historyStack);
-			
-			for (int i = 0; i < n; i++) {
-				char *tmp = pop(historyStack);
-				push(tmpStack, tmp);
-			}
-			
-			int count = 0;
-			while (peekStack(tmpStack)) {
-				char *tmp = pop(tmpStack);
-				printf("%d %s", (historySize - count), tmp);
-				push(historyStack, tmp);
-				count++;
-			}
-			push(historyStack, input);
-		}  else {
+		} else {
 			push(historyStack, input);
 			runArgs(args);
 		}
@@ -120,9 +106,30 @@ void runArgs(char **args) {
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
-		int index = findAmpersand(args);
-		if (index != -1) {
-			args[index - 1] = 0;
+		if (!strcmp(args[0], "history")) {
+			stack *tmpStack = newStack(0);
+			int n = min(sizeStack(historyStack), 10);
+			int historySize = sizeStack(historyStack);
+			
+			for (int i = 0; i < n; i++) {
+				char *tmp = pop(historyStack);
+				push(tmpStack, tmp);
+			}
+			
+			int count = 0;
+			while (peekStack(tmpStack)) {
+				char *tmp = pop(tmpStack);
+				printf("%d %s", (historySize - count), tmp);
+				fflush(stdout);
+				push(historyStack, tmp);
+				count++;
+			}
+		} else {
+			
+			int index = findAmpersand(args);
+			if (index != -1) {
+				args[index - 1] = 0;
+			}
 		}
 		
 		execvp(args[0], args);

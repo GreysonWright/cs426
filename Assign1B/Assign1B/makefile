@@ -2,7 +2,7 @@ OBJS = assign1b.o dll.o stack.o
 OPTS = -Wall -g -std=c99 -Wextra
 
 assign1b : $(OBJS)
-		gcc $(OPTS) $(OBJS) -o final -lm
+		gcc $(OPTS) $(OBJS) -o assign1b -lm
 
 assign1b.o : assign1b.c
 		gcc $(OPTS) -c assign1b.c
