@@ -16,78 +16,61 @@
 #include "stack.h"
 #define MAX_LINE 80 /* The maximum length command */
 
-char *readArgs(char **);
+char *readLine(FILE *);
 void runArgs(char **);
-void processString(char *, char **);
+char **buildArgs(char *);
 int findAmpersand(char **);
-int parseInt(char *);
+void displayHistory(stack *);
 int min(int, int);
-
-stack *historyStack;
+void execHistory(stack *, int);
+char *getStack(stack *, int);
+int parseInt(char *);
 
 int main(void) {
-	char *args[MAX_LINE / 2 + 1];
+	char **args = 0;
 	int should_run = 1;
-	historyStack = newStack(0);
+	stack *historyStack = newStack(0);
 	
 	while (should_run) {
 		printf("osh>");
 		fflush(stdout);
 		
-		char *input = readArgs(args);
-		if (!strcmp(args[0], "exit")) {
+		char *input = readLine(stdin);
+		if (!strcmp(input, "exit\n")) {
 			should_run = 0;
-		} else if (!strcmp(args[0], "!!")) {
-			char *lastInput = peekStack(historyStack);
-			if (lastInput) {
-				processString(lastInput, args);
-				runArgs(args);
+		} else if (!strcmp(input, "history\n")) {
+			displayHistory(historyStack);
+			push(historyStack, input);
+		} else if (!strcmp(input, "!!\n")) {
+			if (sizeStack(historyStack) > 0) {
+				execHistory(historyStack, 1);
 			} else {
 				printf("No commands in history.\n");
 			}
-		} else if (strstr(args[0], "!")) {
+		} else if (input[0] == '!') {
 			int parsedInt = parseInt(input);
 			if (parsedInt > 0 && sizeStack(historyStack) >= parsedInt) {
-				stack *tmpStack = newStack(0);
-				int n = min(sizeStack(historyStack), 10);
-				int i = 0;
-				
-				char *command = 0;
-				for (i = 0; i < n; i++) {
-					char *tmp = pop(historyStack);
-					if (i + 1 == parsedInt) {
-						command = tmp;
-					}
-					push(tmpStack, tmp);
-				}
-				
-				int count = 0;
-				while (peekStack(tmpStack)) {
-					char *tmp = pop(tmpStack);
-					push(historyStack, tmp);
-					count++;
-				}
-				processString(command, args);
-				runArgs(args);
+				execHistory(historyStack, parsedInt);
 			} else {
 				printf("No such command in history.\n");
 			}
 		} else {
-			push(historyStack, input);
+			args = buildArgs(input);
 			runArgs(args);
+			push(historyStack, input);
 		}
 	}
 	return 0;
 }
 
-char *readArgs(char **args) {
+char *readLine(FILE *file) {
 	char *str = malloc(MAX_LINE + 1);
-	fgets(str, MAX_LINE, stdin);
-	processString(str, args);
+	fgets(str, MAX_LINE, file);
 	return str;
 }
 
-void processString(char *str, char **args) {
+char **buildArgs(char *str) {
+	char **args = malloc(MAX_LINE / 2 + 1);
 	char *newString = malloc(MAX_LINE + 1);
 	strcpy(newString, str);
 	char *token = strtok(newString, " \n");
@@ -97,39 +80,17 @@ void processString(char *str, char **args) {
 		token = strtok(0, " \n");
 	}
 	args[count] = 0;
+	return args;
 }
 
 void runArgs(char **args) {
-	pid_t pid = 0;
-	
-	pid = fork();
+	pid_t pid = fork();
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
-		if (!strcmp(args[0], "history")) {
-			stack *tmpStack = newStack(0);
-			int n = min(sizeStack(historyStack), 10);
-			int historySize = sizeStack(historyStack);
-			
-			for (int i = 0; i < n; i++) {
-				char *tmp = pop(historyStack);
-				push(tmpStack, tmp);
-			}
-			
-			int count = 0;
-			while (peekStack(tmpStack)) {
-				char *tmp = pop(tmpStack);
-				printf("%d %s", (historySize - count), tmp);
-				fflush(stdout);
-				push(historyStack, tmp);
-				count++;
-			}
-		} else {
-			
-			int index = findAmpersand(args);
-			if (index != -1) {
-				args[index - 1] = 0;
-			}
+		int index = findAmpersand(args);
+		if (index != -1) {
+			args[index - 1] = 0;
 		}
 		
 		execvp(args[0], args);
@@ -151,6 +112,64 @@ int findAmpersand(char **args) {
 	return -1;
 }
 
+void displayHistory(stack *historyStack) {
+	stack *tmpStack = newStack(0);
+	int n = min(sizeStack(historyStack), 10);
+	int historySize = sizeStack(historyStack);
+	
+	for (int i = 0; i < n; i++) {
+		char *tmp = pop(historyStack);
+		push(tmpStack, tmp);
+	}
+	
+	int count = 0;
+	while (peekStack(tmpStack)) {
+		char *tmp = pop(tmpStack);
+		printf("%d %s", (historySize - count), tmp);
+		fflush(stdout);
+		push(historyStack, tmp);
+		count++;
+	}
+}
+
+int min(int a, int b) {
+	return a > b ? b : a;
+}
+
+void execHistory(stack *historyStack, int index) {
+	char *command = getStack(historyStack, index);
+	if (strcmp(command, "history\n")) {
+		char **args = buildArgs(command);
+		runArgs(args);
+	} else {
+		displayHistory(historyStack);
+	}
+}
+
+char *getStack(stack *s, int index) {
+	stack *tmpStack = newStack(0);
+	int n = min(sizeStack(s), 10);
+	int i = 0;
+	
+	char *command = 0;
+	for (i = 0; i < n; i++) {
+		char *tmp = pop(s);
+		if (i + 1 == index) {
+			command = tmp;
+		}
+		push(tmpStack, tmp);
+	}
+	
+	int count = 0;
+	while (peekStack(tmpStack)) {
+		char *tmp = pop(tmpStack);
+		push(s, tmp);
+		count++;
+	}
+	
+	return command;
+}
+
 int parseInt(char *src) {
 	long length = strlen(src);
 	
@@ -164,6 +183,3 @@ int parseInt(char *src) {
 	return 0;
 }
 
-int min(int a, int b) {
-	return a > b ? b : a;
-}
