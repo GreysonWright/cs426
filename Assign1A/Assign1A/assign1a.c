@@ -15,9 +15,13 @@
 
 int main(int argc, const char * argv[]) {
 	int n = atoi(argv[1]);
-	pid_t pid = 0;
 	
-	pid = fork();
+	if (n < 1) {
+		printf("Please provide a number greater than 0.\n");
+		exit(-1);
+	}
+	
+	pid_t pid = fork();
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
