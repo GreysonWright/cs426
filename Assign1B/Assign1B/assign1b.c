@@ -20,6 +20,8 @@ char *readArgs(char **);
 void runArgs(char **);
 void processString(char *, char **);
 int findAmpersand(char **);
+int parseInt(char *);
+int min(int, int);
 
 stack *historyStack;
 
@@ -37,10 +39,55 @@ int main(void) {
 			should_run = 0;
 		} else if (!strcmp(args[0], "!!")) {
 			char *lastInput = peekStack(historyStack);
-			processString(lastInput, args);
-			runArgs(args);
+			if (lastInput) {
+				processString(lastInput, args);
+				runArgs(args);
+			}
 		} else if (strstr(args[0], "!")) {
+			int parsedInt = parseInt(input);
+			if (parsedInt > 0 && sizeStack(historyStack) >= parsedInt) {
+				int historySize = sizeStack(historyStack);
+				stack *tmpStack = newStack(0);
+				int n = min(sizeStack(historyStack), 10);
+				int i = 0;
+				
+				char *command = 0;
+				for (i = 0; i < n; i++) {
+					char *tmp = pop(historyStack);
+					if (i + 1 == parsedInt) {
+						command = tmp;
+					}
+					push(tmpStack, tmp);
+				}
+				
+				int count = 0;
+				while (peekStack(tmpStack)) {
+					char *tmp = pop(tmpStack);
+					push(historyStack, tmp);
+					count++;
+				}
+				printf("%s\n", command);
+				processString(command, args);
+				runArgs(args);
+			}
+		} else if (!strcmp(args[0], "history")) {
+			stack *tmpStack = newStack(0);
+			int n = min(sizeStack(historyStack), 10);
+			int historySize = sizeStack(historyStack);
 			
+			for (int i = 0; i < n; i++) {
+				char *tmp = pop(historyStack);
+				push(tmpStack, tmp);
+			}
+			
+			int count = 0;
+			while (peekStack(tmpStack)) {
+				char *tmp = pop(tmpStack);
+				printf("%d %s", (historySize - count), tmp);
+				push(historyStack, tmp);
+				count++;
+			}
+			push(historyStack, input);
 		}  else {
 			push(historyStack, input);
 			runArgs(args);
@@ -82,7 +129,7 @@ void runArgs(char **args) {
 		
 		execvp(args[0], args);
 	} else if (pid > 0) {
-		if (findAmpersand(args) != -1) {
+		if (findAmpersand(args) == -1) {
 			wait(0);
 		}
 	}
@@ -97,4 +144,21 @@ int findAmpersand(char **args) {
 	}
 	
 	return -1;
+}
+
+int parseInt(char *src) {
+	long length = strlen(src);
+	
+	if (length > 2) {
+		char *str = src + 1;
+		str[length - 1] = 0;
+		
+		return atoi(str);
+	}
+	
+	return 0;
+}
+
+int min(int a, int b) {
+	return a > b ? b : a;
 }
