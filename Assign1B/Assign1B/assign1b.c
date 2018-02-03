@@ -46,7 +46,6 @@ int main(void) {
 		} else if (strstr(args[0], "!")) {
 			int parsedInt = parseInt(input);
 			if (parsedInt > 0 && sizeStack(historyStack) >= parsedInt) {
-				int historySize = sizeStack(historyStack);
 				stack *tmpStack = newStack(0);
 				int n = min(sizeStack(historyStack), 10);
 				int i = 0;
@@ -66,7 +65,6 @@ int main(void) {
 					push(historyStack, tmp);
 					count++;
 				}
-				printf("%s\n", command);
 				processString(command, args);
 				runArgs(args);
 			}
