@@ -54,10 +54,11 @@ int main(void) {
 			} else {
 				printf("No such command in history.\n");
 			}
-		} else {
+		} else if (!isspace(input[0])) {
 			args = buildArgs(input);
 			runArgs(args);
 			push(historyStack, input);
+			
 		}
 	}
 	return 0;
