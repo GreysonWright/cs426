@@ -30,7 +30,7 @@ int main(void) {
 	char **args = 0;
 	int should_run = 1;
 	stack *historyStack = newStack(0);
-		
+	
 	while (should_run) {
 		printf("osh>");
 		fflush(stdout);
@@ -119,27 +119,9 @@ void displayHistory(stack *historyStack) {
 	int n = min(historyStackSize, 10);
 	
 	for (int i = 0; i < n; i++) {
-		int index = historyStackSize - i;
-		command = getStack(historyStack, index);
-		printf("%d %s", index, command);
+		command = getStack(historyStack, n - i);
+		printf("%d %s", historyStackSize - i, command);
 	}
-//	stack *tmpStack = newStack(0);
-//	int n = min(sizeStack(historyStack), 10);
-//	int historySize = sizeStack(historyStack);
-//
-//	for (int i = 0; i < n; i++) {
-//		char *tmp = pop(historyStack);
-//		push(tmpStack, tmp);
-//	}
-//
-//	int count = 0;
-//	while (peekStack(tmpStack)) {
-//		char *tmp = pop(tmpStack);
-//		printf("%d %s", (historySize - count), tmp);
-//		fflush(stdout);
-//		push(historyStack, tmp);
-//		count++;
-//	}
 }
 
 int min(int a, int b) {
