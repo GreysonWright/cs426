@@ -1,4 +1,4 @@
-OBJS = assign1b.o dll.o stack.o
+OBJS = assign1b.o darray.o
 OPTS = -Wall -g -std=c99 -Wextra
 
 assign1b : $(OBJS)
@@ -7,11 +7,8 @@ assign1b : $(OBJS)
 assign1b.o : assign1b.c
 		gcc $(OPTS) -c assign1b.c
 
-stack.o : stack.c stack.h
-		gcc $(OPTS) -c stack.c
-
-dll.o : dll.c dll.h
-		gcc $(OPTS) -c dll.c
+darray.o : darray.c darray.h
+		gcc $(OPTS) -c darray.c
 
 clean :
 		rm -f $(OBJS) assign1b

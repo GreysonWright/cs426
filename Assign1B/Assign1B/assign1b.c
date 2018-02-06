@@ -13,23 +13,22 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
-#include "stack.h"
+#include "darray.h"
 #define MAX_LINE 80 /* The maximum length command */
 
 char *readLine(FILE *);
 void runArgs(char **);
 char **buildArgs(char *);
 int findAmpersand(char **);
-void displayHistory(stack *);
+void displayHistory(DArray *);
 int min(int, int);
-void execHistory(stack *, int);
-char *getStack(stack *, int);
+void execHistory(DArray *, int);
 int parseInt(char *);
 
 int main(void) {
 	char **args = 0;
 	int should_run = 1;
-	stack *historyStack = newStack(0);
+	DArray *historyArray = newDArray(0);
 	
 	while (should_run) {
 		printf("osh>");
@@ -39,26 +38,25 @@ int main(void) {
 		if (!strcmp(input, "exit\n")) {
 			should_run = 0;
 		} else if (!strcmp(input, "history\n")) {
-			displayHistory(historyStack);
-			push(historyStack, input);
+			displayHistory(historyArray);
+			insertDArray(historyArray, input);
 		} else if (!strcmp(input, "!!\n")) {
-			if (sizeStack(historyStack) > 0) {
-				execHistory(historyStack, 1);
+			if (sizeDArray(historyArray) > 0) {
+				execHistory(historyArray, 1);
 			} else {
 				printf("No commands in history.\n");
 			}
 		} else if (input[0] == '!') {
 			int parsedInt = parseInt(input);
-			if (parsedInt > 0 && sizeStack(historyStack) >= parsedInt) {
-				execHistory(historyStack, parsedInt);
+			if (parsedInt > 0 && sizeDArray(historyArray) >= parsedInt) {
+				execHistory(historyArray, parsedInt);
 			} else {
 				printf("No such command in history.\n");
 			}
 		} else if (!isspace(input[0])) {
 			args = buildArgs(input);
 			runArgs(args);
-			push(historyStack, input);
-			
+			insertDArray(historyArray, input);
 		}
 	}
 	return 0;
@@ -113,14 +111,14 @@ int findAmpersand(char **args) {
 	return -1;
 }
 
-void displayHistory(stack *historyStack) {
+void displayHistory(DArray *historyArray) {
 	char *command = 0;
-	int historyStackSize = sizeStack(historyStack);
-	int n = min(historyStackSize, 10);
+	int historySize = sizeDArray(historyArray);
+	int n = min(historySize, 10);
 	
 	for (int i = 0; i < n; i++) {
-		command = getStack(historyStack, n - i);
-		printf("%d %s", historyStackSize - i, command);
+		command = getDArray(historyArray, i);
+		printf("%d %s", historySize - i, command);
 	}
 }
 
@@ -128,37 +126,14 @@ int min(int a, int b) {
 	return a > b ? b : a;
 }
 
-void execHistory(stack *historyStack, int index) {
-	char *command = getStack(historyStack, index);
+void execHistory(DArray *historyArray, int index) {
+	char *command = getDArray(historyArray, index - 1);
 	if (strcmp(command, "history\n")) {
 		char **args = buildArgs(command);
 		runArgs(args);
 	} else {
-		displayHistory(historyStack);
+		displayHistory(historyArray);
 	}
-}
-
-char *getStack(stack *s, int index) {
-	stack *tmpStack = newStack(0);
-	int stackSize = sizeStack(s);
-	
-	char *command = 0;
-	for (int i = 0; i < stackSize; i++) {
-		char *tmp = pop(s);
-		if (i + 1 == index) {
-			command = tmp;
-		}
-		push(tmpStack, tmp);
-	}
-	
-	int count = 0;
-	while (peekStack(tmpStack)) {
-		char *tmp = pop(tmpStack);
-		push(s, tmp);
-		count++;
-	}
-	
-	return command;
 }
 
 int parseInt(char *src) {

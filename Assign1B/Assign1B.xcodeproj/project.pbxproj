@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E2EE9A82023EBA7002899AC /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E2EE9A72023EBA7002899AC /* stack.c */; };
-		2E2EE9AB2023EBDD002899AC /* dll.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E2EE9AA2023EBDD002899AC /* dll.c */; };
 		2E65615720227A5B0068B2EB /* assign1b.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E65615620227A5B0068B2EB /* assign1b.c */; };
+		2EBB97AF20294005005F660A /* darray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EBB97AE20294005005F660A /* darray.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,12 +24,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2E2EE9A62023EBA7002899AC /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
-		2E2EE9A72023EBA7002899AC /* stack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stack.c; sourceTree = "<group>"; };
-		2E2EE9A92023EBDD002899AC /* dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll.h; sourceTree = "<group>"; };
-		2E2EE9AA2023EBDD002899AC /* dll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dll.c; sourceTree = "<group>"; };
 		2E65615320227A5B0068B2EB /* Assign1B */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Assign1B; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E65615620227A5B0068B2EB /* assign1b.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = assign1b.c; sourceTree = "<group>"; };
+		2EBB97AD20294004005F660A /* darray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = darray.h; sourceTree = "<group>"; };
+		2EBB97AE20294005005F660A /* darray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = darray.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,10 +60,8 @@
 		2E65615520227A5B0068B2EB /* Assign1B */ = {
 			isa = PBXGroup;
 			children = (
-				2E2EE9A92023EBDD002899AC /* dll.h */,
-				2E2EE9AA2023EBDD002899AC /* dll.c */,
-				2E2EE9A62023EBA7002899AC /* stack.h */,
-				2E2EE9A72023EBA7002899AC /* stack.c */,
+				2EBB97AE20294005005F660A /* darray.c */,
+				2EBB97AD20294004005F660A /* darray.h */,
 				2E65615620227A5B0068B2EB /* assign1b.c */,
 			);
 			path = Assign1B;
@@ -129,8 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E2EE9AB2023EBDD002899AC /* dll.c in Sources */,
-				2E2EE9A82023EBA7002899AC /* stack.c in Sources */,
+				2EBB97AF20294005005F660A /* darray.c in Sources */,
 				2E65615720227A5B0068B2EB /* assign1b.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
