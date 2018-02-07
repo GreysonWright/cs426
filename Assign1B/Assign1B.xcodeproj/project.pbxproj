@@ -60,8 +60,8 @@
 		2E65615520227A5B0068B2EB /* Assign1B */ = {
 			isa = PBXGroup;
 			children = (
-				2EBB97AE20294005005F660A /* darray.c */,
 				2EBB97AD20294004005F660A /* darray.h */,
+				2EBB97AE20294005005F660A /* darray.c */,
 				2E65615620227A5B0068B2EB /* assign1b.c */,
 			);
 			path = Assign1B;

@@ -116,9 +116,9 @@ void displayHistory(DArray *historyArray) {
 	int historySize = sizeDArray(historyArray);
 	int n = min(historySize, 10);
 	
-	for (int i = 0; i < n; i++) {
+	for (int i = historySize - n; i < historySize; i++) {
 		command = getDArray(historyArray, i);
-		printf("%d %s", historySize - i, command);
+		printf("%d %s", historySize - i + (historySize - n), command);
 	}
 }
 
@@ -127,7 +127,8 @@ int min(int a, int b) {
 }
 
 void execHistory(DArray *historyArray, int index) {
-	char *command = getDArray(historyArray, index - 1);
+	int historySize = sizeDArray(historyArray);
+	char *command = getDArray(historyArray, historySize - index);
 	if (strcmp(command, "history\n")) {
 		char **args = buildArgs(command);
 		runArgs(args);
