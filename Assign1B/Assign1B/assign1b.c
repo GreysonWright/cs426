@@ -95,7 +95,7 @@ void runArgs(char **args) {
 		execvp(args[0], args);
 	} else if (pid > 0) {
 		if (findAmpersand(args) == -1) {
-			wait(0);
+			while (pid != wait(0));
 		}
 	}
 }
