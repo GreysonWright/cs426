@@ -17,16 +17,16 @@
 #define MAX_LINE 80 /* The maximum length command */
 
 char *readLine(FILE *);
-void runArgs(char **);
+int interpretInput(char *, DArray *);
 char **buildArgs(char *);
+void execArgs(char **);
 int findAmpersand(char **);
 void displayHistory(DArray *);
 int max(int, int);
-void execHistory(DArray *, int);
 int parseInt(char *);
+void execHistory(DArray *, int);
 
 int main(void) {
-	char **args = 0;
 	int should_run = 1;
 	DArray *historyArray = newDArray(0);
 	
@@ -35,35 +35,54 @@ int main(void) {
 		fflush(stdout);
 		
 		char *input = readLine(stdin);
-		if (!strcmp(input, "exit\n")) {
-			should_run = 0;
-		} else if (!strcmp(input, "history\n")) {
-			if (sizeDArray(historyArray) > 0) {
-				displayHistory(historyArray);
-			} else {
-				printf("No commands in history.\n");
-			}
-		} else if (!strcmp(input, "!!\n")) {
-			if (sizeDArray(historyArray) > 0) {
-				int historySize = sizeDArray(historyArray);
-				execHistory(historyArray, historySize);
-			} else {
-				printf("No commands in history.\n");
-			}
-		} else if (input[0] == '!') {
-			int parsedInt = parseInt(input);
-			if (parsedInt > 0 && sizeDArray(historyArray) >= parsedInt) {
-				execHistory(historyArray, parsedInt);
-			} else {
-				printf("No such command in history.\n");
-			}
-		} else if (!isspace(input[0])) {
-			args = buildArgs(input);
-			runArgs(args);
-			insertDArray(historyArray, input);
-		}
+		should_run = interpretInput(input, historyArray);
 	}
 	return 0;
+}
+
+int interpretInput(char *input, DArray *historyArray) {
+	char **args = 0;
+	
+	if (!strcmp(input, "exit\n")) {
+		return 0;
+	}
+	
+	if (!strcmp(input, "history\n")) {
+		if (sizeDArray(historyArray) > 0) {
+			displayHistory(historyArray);
+		} else {
+			printf("No commands in history.\n");
+		}
+		return 1;
+	}
+	
+	if (!strcmp(input, "!!\n")) {
+		if (sizeDArray(historyArray) > 0) {
+			int historySize = sizeDArray(historyArray);
+			execHistory(historyArray, historySize);
+		} else {
+			printf("No commands in history.\n");
+		}
+		return 1;
+	}
+	
+	if (input[0] == '!') {
+		int parsedInt = parseInt(input);
+		if (parsedInt > 0 && sizeDArray(historyArray) >= parsedInt) {
+			execHistory(historyArray, parsedInt);
+		} else {
+			printf("No such command in history.\n");
+		}
+		return 1;
+	}
+	
+	if (!isspace(input[0])) {
+		args = buildArgs(input);
+		execArgs(args);
+		insertDArray(historyArray, input);
+		return 1;
+	}
+	return 1;
 }
 
 char *readLine(FILE *file) {
@@ -86,7 +105,7 @@ char **buildArgs(char *str) {
 	return args;
 }
 
-void runArgs(char **args) {
+void execArgs(char **args) {
 	pid_t pid = fork();
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
@@ -130,12 +149,6 @@ int max(int a, int b) {
 	return a > b ? a : b;
 }
 
-void execHistory(DArray *historyArray, int index) {
-	char *command = getDArray(historyArray, index - 1);
-	char **args = buildArgs(command);
-	runArgs(args);
-}
-
 int parseInt(char *src) {
 	long length = strlen(src);
 	
@@ -149,3 +162,8 @@ int parseInt(char *src) {
 	return 0;
 }
 
+void execHistory(DArray *historyArray, int index) {
+	char *command = getDArray(historyArray, index - 1);
+	char **args = buildArgs(command);
+	execArgs(args);
+}
