@@ -21,7 +21,7 @@ void runArgs(char **);
 char **buildArgs(char *);
 int findAmpersand(char **);
 void displayHistory(DArray *);
-int min(int, int);
+int max(int, int);
 void execHistory(DArray *, int);
 int parseInt(char *);
 
@@ -38,11 +38,15 @@ int main(void) {
 		if (!strcmp(input, "exit\n")) {
 			should_run = 0;
 		} else if (!strcmp(input, "history\n")) {
-			displayHistory(historyArray);
-			insertDArray(historyArray, input);
+			if (sizeDArray(historyArray) > 0) {
+				displayHistory(historyArray);
+			} else {
+				printf("No commands in history.\n");
+			}
 		} else if (!strcmp(input, "!!\n")) {
 			if (sizeDArray(historyArray) > 0) {
-				execHistory(historyArray, 1);
+				int historySize = sizeDArray(historyArray);
+				execHistory(historyArray, historySize);
 			} else {
 				printf("No commands in history.\n");
 			}
@@ -114,27 +118,22 @@ int findAmpersand(char **args) {
 void displayHistory(DArray *historyArray) {
 	char *command = 0;
 	int historySize = sizeDArray(historyArray);
-	int n = min(historySize, 10);
+	int n = max(historySize - 10, 0);
 	
-	for (int i = historySize - n; i < historySize; i++) {
+	for (int i = historySize - 1; i >= n; i--) {
 		command = getDArray(historyArray, i);
-		printf("%d %s", historySize - i + (historySize - n), command);
+		printf("%d %s", i + 1, command);
 	}
 }
 
-int min(int a, int b) {
-	return a > b ? b : a;
+int max(int a, int b) {
+	return a > b ? a : b;
 }
 
 void execHistory(DArray *historyArray, int index) {
-	int historySize = sizeDArray(historyArray);
-	char *command = getDArray(historyArray, historySize - index);
-	if (strcmp(command, "history\n")) {
-		char **args = buildArgs(command);
-		runArgs(args);
-	} else {
-		displayHistory(historyArray);
-	}
+	char *command = getDArray(historyArray, index - 1);
+	char **args = buildArgs(command);
+	runArgs(args);
 }
 
 int parseInt(char *src) {
