@@ -42,14 +42,14 @@ int main(int argc, const char **argv) {
 	pthread_join(tid_min, NULL);
 	
 	printf("The average value is: %lf\n", numAvg);
-	printf("The minimum value is: %d", numMax);
-	printf("The maximum value is: %d", numMax);
+	printf("The minimum value is: %d\n", numMax);
+	printf("The maximum value is: %d\n", numMax);
 	return 0;
 }
 
 DArray *buildNumbersList(int argc, const char **argv) {
 	DArray *numbers = newDArray(0);
-	for (int i = 0; i < argc - 1; i++) {
+	for (int i = 1; i < argc; i++) {
 		int number = atof(argv[i]);
 		insertDArray(numbers, newDouble(number));
 	}
