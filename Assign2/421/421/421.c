@@ -13,15 +13,15 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include "darray.h"
-#include "Double.h"
+#include "integer.h"
 
 DArray *buildNumbersList(int, const char **);
 void *avg(void *);
-double sum(DArray *);
-void *max(void *);
+int sum(DArray *);
 void *min(void *);
+void *max(void *);
 
-double numAvg;
+int numAvg;
 int numMax;
 int numMin;
 
@@ -35,14 +35,14 @@ int main(int argc, const char **argv) {
 	pthread_t tid_max;
 	pthread_t tid_min;
 	pthread_create(&tid_avg, 0, avg, numbers);
-	pthread_create(&tid_max, 0, max, numbers);
 	pthread_create(&tid_min, 0, min, numbers);
+	pthread_create(&tid_max, 0, max, numbers);
 	pthread_join(tid_avg, NULL);
-	pthread_join(tid_max, NULL);
 	pthread_join(tid_min, NULL);
+	pthread_join(tid_max, NULL);
 	
-	printf("The average value is: %lf\n", numAvg);
-	printf("The minimum value is: %d\n", numMax);
+	printf("The average value is: %d\n", numAvg);
+	printf("The minimum value is: %d\n", numMin);
 	printf("The maximum value is: %d\n", numMax);
 	return 0;
 }
@@ -50,31 +50,41 @@ int main(int argc, const char **argv) {
 DArray *buildNumbersList(int argc, const char **argv) {
 	DArray *numbers = newDArray(0);
 	for (int i = 1; i < argc; i++) {
-		int number = atof(argv[i]);
-		insertDArray(numbers, newDouble(number));
+		int number = atoi(argv[i]);
+		insertDArray(numbers, newInteger(number));
 	}
 	return numbers;
 }
 
 void *avg(void *args) {
-	double numSum = sum(args);
+	int numSum = sum(args);
 	numAvg = numSum / sizeDArray(args);
 	pthread_exit(0);
 }
 
-double sum(DArray *numbers) {
+int sum(DArray *numbers) {
 	double sum = 0;
 	for (int i = 0; i < sizeDArray(numbers); i++) {
-		Double *number = getDArray(numbers, i);
-		sum += getDouble(number);
+		integer *number = getDArray(numbers, i);
+		sum += getInteger(number);
 	}
 	return sum;
 }
 
-void *max(void *args) {
+void *min(void *args) {
+	numMin = getInteger(getDArray(args, 0));
+	for (int i = 1; i < sizeDArray(args); i++) {
+		integer *number = getDArray(args, i);
+		numMin = fmin(numMin, getInteger(number));
+	}
 	pthread_exit(0);
 }
 
-void *min(void *args) {
+void *max(void *args) {
+	numMax = getInteger(getDArray(args, 0));
+	for (int i = 1; i < sizeDArray(args); i++) {
+		integer *number = getDArray(args, i);
+		numMax = fmax(numMax, getInteger(number));
+	}
 	pthread_exit(0);
 }
