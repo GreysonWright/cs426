@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include "PIDManager.h"
 const int MIN_PID = 300;
 const int MAX_PID = 5000;
-const int MAX_MAP = 4700;
+const int MAX_MAP = 4701;
 
-int *map;
+PIDManager *pidManager;
 
 int allocate_map(void);
 int allocate_pid(void);
@@ -23,32 +24,27 @@ void release_pid(int);
 int count;
 
 int main(int argc, const char **argv) {
-	
+	allocate_map();
+	for (int i = 0; i < MAX_MAP; i++) {
+		int pid = allocate_pid();
+		printf("%d\n", pid);
+	}
+	for (int i = 0; i < MAX_MAP; i++) {
+		release_pid(i);
+	}
 	return 0;
 }
 
 int allocate_map() {
-	map = malloc(MAX_MAP);
-	if (map == 0) {
-		return -1;
-	}
-	
-	for (int i = 0; i < MAX_MAP; i++) {
-		map[i] = -1;
-	}
-	count = 0;
+	pidManager = newPIDManager(MAX_MAP);
 	
 	return 1;
 }
 
 int allocate_pid() {
-	
-	
-	int pid = 0;
-	
-	return 0;
+	return createProcess(pidManager);
 }
 
 void release_pid(int pid) {
-	
+	removeProcess(pidManager, pid);
 }

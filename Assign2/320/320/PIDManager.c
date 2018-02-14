@@ -9,28 +9,33 @@
 #include "PIDManager.h"
 
 struct PIDManager {
-	int count;
 	int capacity;
 	int *map;
 };
 
+int incrementPIDCounter(PIDManager *);
+
 PIDManager *newPIDManager(int capacity) {
 	PIDManager *manager = malloc(sizeof *manager);
 	manager->capacity = capacity;
-	manager->count = 0;
 	manager->map = calloc(capacity, capacity);
 	return manager;
 }
 
 int createProcess(PIDManager *manager) {
-//	int nextPID = (manager->count + 1)
-//	if (countPIDManager(manager) < manager->capacity) {
-//		manager->map[] = 1;
-//		return countPIDManager(manager);
-//	}
+	for (int pid = 0; pid < manager->capacity; pid++) {
+		if (manager->map[pid] == 0) {
+			manager->map[pid] = 1;
+			return pid;
+		}
+	}
 	return -1;
 }
 
-int countPIDManager(PIDManager *manager) {
-	return manager->count;
+int removeProcess(PIDManager *manager, int pid) {
+	if (manager->map[pid] == 0) {
+		return -1;
+	}
+	manager->map[pid] = 0;
+	return pid;
 }

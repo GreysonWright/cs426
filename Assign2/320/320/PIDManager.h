@@ -16,6 +16,6 @@ typedef struct PIDManager PIDManager;
 
 PIDManager *newPIDManager(int);
 int createProcess(PIDManager *);
-int countPIDManager(PIDManager *);
+int removeProcess(PIDManager *, int);
 
 #endif /* PIDManager_h */
