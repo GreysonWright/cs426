@@ -1,5 +1,5 @@
 OBJS = main.o darray.o integer.o
-OPTS = -Wall -g -std=c99 -Wextra
+OPTS = -lpthread -Wall -g -std=c99 -Wextra
 
 421 : $(OBJS)
 		gcc $(OPTS) $(OBJS) -o 421 -lm

@@ -1,5 +1,5 @@
 OBJS = main.o PIDManager.o
-OPTS = -Wall -g -std=c99 -Wextra
+OPTS = -lpthread -Wall -g -std=c99 -Wextra
 
 420 : $(OBJS)
 		gcc $(OPTS) $(OBJS) -o 420 -lm
