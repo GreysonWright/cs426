@@ -29,7 +29,7 @@ void release_pid(int);
 
 int count;
 
-int main(int argc, const char **argv) {
+int main() {
 	pthread_t *tids = malloc((sizeof *tids) * 100);
 	int didAllocMap = allocate_map();
 	pthread_mutex_init(&mut, 0);
@@ -66,6 +66,7 @@ void joinThreads(pthread_t *tids) {
 }
 
 void *testManager(void *args) {
+	(void)args;
 	pthread_mutex_lock(&mut);
 	int pid = allocate_pid();
 	pthread_mutex_unlock(&mut);

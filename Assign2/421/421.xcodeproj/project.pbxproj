@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E44278E20324F1100DC7354 /* 421.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E44278D20324F1100DC7354 /* 421.c */; };
+		2E44278E20324F1100DC7354 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E44278D20324F1100DC7354 /* main.c */; };
 		2E4427992032539B00DC7354 /* darray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E4427982032539B00DC7354 /* darray.c */; };
 		2E44279F2032615900DC7354 /* integer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E44279D2032615900DC7354 /* integer.c */; };
 /* End PBXBuildFile section */
@@ -26,7 +26,7 @@
 
 /* Begin PBXFileReference section */
 		2E44278A20324F1100DC7354 /* 421 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 421; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E44278D20324F1100DC7354 /* 421.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = 421.c; sourceTree = "<group>"; };
+		2E44278D20324F1100DC7354 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		2E4427972032539B00DC7354 /* darray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = darray.h; sourceTree = "<group>"; };
 		2E4427982032539B00DC7354 /* darray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = darray.c; sourceTree = "<group>"; };
 		2E44279D2032615900DC7354 /* integer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = integer.c; sourceTree = "<group>"; };
@@ -67,7 +67,7 @@
 				2E44279D2032615900DC7354 /* integer.c */,
 				2E4427972032539B00DC7354 /* darray.h */,
 				2E4427982032539B00DC7354 /* darray.c */,
-				2E44278D20324F1100DC7354 /* 421.c */,
+				2E44278D20324F1100DC7354 /* main.c */,
 			);
 			path = 421;
 			sourceTree = "<group>";
@@ -130,7 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E4427992032539B00DC7354 /* darray.c in Sources */,
-				2E44278E20324F1100DC7354 /* 421.c in Sources */,
+				2E44278E20324F1100DC7354 /* main.c in Sources */,
 				2E44279F2032615900DC7354 /* integer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

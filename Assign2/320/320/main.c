@@ -23,7 +23,7 @@ void release_pid(int);
 
 int count;
 
-int main(int argc, const char **argv) {
+int main() {
 	allocate_map();
 	for (int i = 0; i < MAX_MAP; i++) {
 		int pid = allocate_pid();
