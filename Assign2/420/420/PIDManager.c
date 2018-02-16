@@ -26,16 +26,18 @@ int createProcess(PIDManager *manager) {
 	for (int pid = 0; pid < manager->capacity; pid++) {
 		if (manager->map[pid] == 0) {
 			manager->map[pid] = 1;
-			return pid;
+			return pid + 300;
 		}
 	}
 	return -1;
 }
 
 int removeProcess(PIDManager *manager, int pid) {
-	if (manager->map[pid] == 0) {
+	int index = pid - 300;
+	if (manager->map[index] == 0) {
 		return -1;
 	}
-	manager->map[pid] = 0;
+	manager->map[index] = 0;
 	return pid;
 }
+
