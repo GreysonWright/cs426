@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2E86FF272034C5AC001C5FA3 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E86FF242034C5AC001C5FA3 /* main.c */; };
 		2E86FF282034C5AC001C5FA3 /* PIDManager.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E86FF252034C5AC001C5FA3 /* PIDManager.c */; };
+		2EED95362037969F009C32E4 /* PIDInterface.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EED95352037969F009C32E4 /* PIDInterface.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		2E86FF242034C5AC001C5FA3 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		2E86FF252034C5AC001C5FA3 /* PIDManager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PIDManager.c; sourceTree = "<group>"; };
 		2E86FF262034C5AC001C5FA3 /* PIDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIDManager.h; sourceTree = "<group>"; };
+		2EED95342037969F009C32E4 /* PIDInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIDInterface.h; sourceTree = "<group>"; };
+		2EED95352037969F009C32E4 /* PIDInterface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PIDInterface.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,8 @@
 			children = (
 				2E86FF262034C5AC001C5FA3 /* PIDManager.h */,
 				2E86FF252034C5AC001C5FA3 /* PIDManager.c */,
+				2EED95342037969F009C32E4 /* PIDInterface.h */,
+				2EED95352037969F009C32E4 /* PIDInterface.c */,
 				2E86FF242034C5AC001C5FA3 /* main.c */,
 			);
 			path = 420;
@@ -125,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E86FF272034C5AC001C5FA3 /* main.c in Sources */,
+				2EED95362037969F009C32E4 /* PIDInterface.c in Sources */,
 				2E86FF282034C5AC001C5FA3 /* PIDManager.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

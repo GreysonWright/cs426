@@ -26,6 +26,10 @@ int numMax;
 int numMin;
 
 int main(int argc, const char **argv) {
+	if (argc <= 1) {
+		fprintf(stderr, "Not enough arguments provided.\n");
+		exit(-1);
+	}
 	numAvg = 0;
 	numMax = 0;
 	numMin = 0;

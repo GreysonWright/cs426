@@ -11,23 +11,14 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/types.h>
-#include "PIDManager.h"
-const int MIN_PID = 300;
-const int MAX_PID = 5000;
-const int MAX_MAP = 4701;
+#include "PIDInterface.h"
 
-pthread_mutex_t mut;
-PIDManager *pidManager;
-
-int allocate_map(void);
 void createThreads(pthread_t *);
 void joinThreads(pthread_t *);
 void *testManager(void *);
-int allocate_pid(void);
-int getMap(void);
-void release_pid(int);
 
 int count;
+pthread_mutex_t mut;
 
 int main() {
 	pthread_t *tids = malloc((sizeof *tids) * 100);
@@ -42,15 +33,6 @@ int main() {
 	createThreads(tids);
 	joinThreads(tids);
 	return 0;
-}
-
-int allocate_map() {
-	pidManager = newPIDManager(MAX_MAP);
-	if (pidManager == 0) {
-		printf("Could not allocate map.\n");
-		return -1;
-	}
-	return 1;
 }
 
 void createThreads(pthread_t *tids) {
@@ -72,7 +54,7 @@ void *testManager(void *args) {
 	pthread_mutex_unlock(&mut);
 	
 	if (pid == -1) {
-		printf("Could not allocate pid.\n");
+		fprintf(stderr, "Could not allocate pid.\n");
 		pthread_exit(0);
 	}
 	
@@ -87,12 +69,4 @@ void *testManager(void *args) {
 	printf("released %d\n",pid);
 	
 	pthread_exit(0);
-}
-
-int allocate_pid() {
-	return createProcess(pidManager);
-}
-
-void release_pid(int pid) {
-	removeProcess(pidManager, pid);
 }

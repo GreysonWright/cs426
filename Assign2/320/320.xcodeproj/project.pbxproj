@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EED953320379473009C32E4 /* PIDInterface.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EED953220379473009C32E4 /* PIDInterface.c */; };
 		2EFA08702033E4CF001A5FFE /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EFA086F2033E4CF001A5FFE /* main.c */; };
 		2EFA087B2033EE8A001A5FFE /* PIDManager.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EFA087A2033EE8A001A5FFE /* PIDManager.c */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2EED953120379473009C32E4 /* PIDInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIDInterface.h; sourceTree = "<group>"; };
+		2EED953220379473009C32E4 /* PIDInterface.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = PIDInterface.c; sourceTree = "<group>"; };
 		2EFA086C2033E4CF001A5FFE /* 320 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 320; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EFA086F2033E4CF001A5FFE /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		2EFA08792033EE8A001A5FFE /* PIDManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIDManager.h; sourceTree = "<group>"; };
@@ -62,6 +65,8 @@
 			children = (
 				2EFA08792033EE8A001A5FFE /* PIDManager.h */,
 				2EFA087A2033EE8A001A5FFE /* PIDManager.c */,
+				2EED953120379473009C32E4 /* PIDInterface.h */,
+				2EED953220379473009C32E4 /* PIDInterface.c */,
 				2EFA086F2033E4CF001A5FFE /* main.c */,
 			);
 			path = 320;
@@ -125,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EFA08702033E4CF001A5FFE /* main.c in Sources */,
+				2EED953320379473009C32E4 /* PIDInterface.c in Sources */,
 				2EFA087B2033EE8A001A5FFE /* PIDManager.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
