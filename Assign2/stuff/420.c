@@ -1,5 +1,6 @@
 //
 //  main.c
+//  420
 //
 //  Created by Greyson Wright on 2/13/18.
 //  Copyright © 2018 Greyson Wright. All rights reserved.
@@ -16,6 +17,7 @@ void createThreads(pthread_t *);
 void joinThreads(pthread_t *);
 void *testManager(void *);
 
+int count;
 pthread_mutex_t mut;
 
 int main() {

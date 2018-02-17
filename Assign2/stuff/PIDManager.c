@@ -1,5 +1,6 @@
 //
 //  PIDManager.c
+//  320
 //
 //  Created by Greyson Wright on 2/13/18.
 //  Copyright © 2018 Greyson Wright. All rights reserved.
@@ -17,7 +18,7 @@ int incrementPIDCounter(PIDManager *);
 PIDManager *newPIDManager(int capacity) {
 	PIDManager *manager = malloc(sizeof *manager);
 	manager->capacity = capacity;
-	manager->map = calloc(capacity, sizeof(int) * capacity);
+	manager->map = calloc(capacity, capacity);
 	return manager;
 }
 
@@ -39,4 +40,3 @@ int removeProcess(PIDManager *manager, int pid) {
 	manager->map[index] = 0;
 	return pid;
 }
-
