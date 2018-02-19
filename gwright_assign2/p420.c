@@ -1,6 +1,5 @@
 //
 //  main.c
-//  420
 //
 //  Created by Greyson Wright on 2/13/18.
 //  Copyright © 2018 Greyson Wright. All rights reserved.
@@ -11,13 +10,12 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/types.h>
-#include "PIDInterface.h"
+#include "p320.h"
 
 void createThreads(pthread_t *);
 void joinThreads(pthread_t *);
 void *testManager(void *);
 
-int count;
 pthread_mutex_t mut;
 
 int main() {

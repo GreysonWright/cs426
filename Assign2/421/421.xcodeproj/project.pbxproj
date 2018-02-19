@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E44278E20324F1100DC7354 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E44278D20324F1100DC7354 /* main.c */; };
-		2EED953B2037CDD2009C32E4 /* integer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EED95382037CDD2009C32E4 /* integer.c */; };
-		2EED953C2037CDD2009C32E4 /* darray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EED95392037CDD2009C32E4 /* darray.c */; };
+		2E1A2153203A6A170051824B /* integer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E1A2151203A6A160051824B /* integer.c */; };
+		2E1A2154203A6A170051824B /* darray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E1A2152203A6A170051824B /* darray.c */; };
+		2E44278E20324F1100DC7354 /* 4.21.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E44278D20324F1100DC7354 /* 4.21.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,12 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2E1A214F203A6A160051824B /* integer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = integer.h; sourceTree = "<group>"; };
+		2E1A2150203A6A160051824B /* darray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = darray.h; sourceTree = "<group>"; };
+		2E1A2151203A6A160051824B /* integer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = integer.c; sourceTree = "<group>"; };
+		2E1A2152203A6A170051824B /* darray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = darray.c; sourceTree = "<group>"; };
 		2E44278A20324F1100DC7354 /* 421 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 421; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E44278D20324F1100DC7354 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		2EED95372037CDD2009C32E4 /* integer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = integer.h; path = ../../stuff/integer.h; sourceTree = "<group>"; };
-		2EED95382037CDD2009C32E4 /* integer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = integer.c; path = ../../stuff/integer.c; sourceTree = "<group>"; };
-		2EED95392037CDD2009C32E4 /* darray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = darray.c; path = ../../stuff/darray.c; sourceTree = "<group>"; };
-		2EED953A2037CDD2009C32E4 /* darray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = darray.h; path = ../../stuff/darray.h; sourceTree = "<group>"; };
+		2E44278D20324F1100DC7354 /* 4.21.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = 4.21.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,11 +63,11 @@
 		2E44278C20324F1100DC7354 /* 421 */ = {
 			isa = PBXGroup;
 			children = (
-				2EED95372037CDD2009C32E4 /* integer.h */,
-				2EED95382037CDD2009C32E4 /* integer.c */,
-				2EED953A2037CDD2009C32E4 /* darray.h */,
-				2EED95392037CDD2009C32E4 /* darray.c */,
-				2E44278D20324F1100DC7354 /* main.c */,
+				2E1A2150203A6A160051824B /* darray.h */,
+				2E1A2152203A6A170051824B /* darray.c */,
+				2E1A214F203A6A160051824B /* integer.h */,
+				2E1A2151203A6A160051824B /* integer.c */,
+				2E44278D20324F1100DC7354 /* 4.21.c */,
 			);
 			path = 421;
 			sourceTree = "<group>";
@@ -129,9 +129,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EED953B2037CDD2009C32E4 /* integer.c in Sources */,
-				2E44278E20324F1100DC7354 /* main.c in Sources */,
-				2EED953C2037CDD2009C32E4 /* darray.c in Sources */,
+				2E1A2154203A6A170051824B /* darray.c in Sources */,
+				2E1A2153203A6A170051824B /* integer.c in Sources */,
+				2E44278E20324F1100DC7354 /* 4.21.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
