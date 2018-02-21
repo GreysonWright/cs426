@@ -74,14 +74,12 @@ void joinThreads(pthread_t *);
 void *testManager(void *);
 
 pthread_mutex_t mut;
-pthread_mutex_t countMut;
 int count;
 
 int main() {
 	pthread_t *tids = malloc((sizeof *tids) * 100);
 	int didAllocMap = allocate_map();
 	pthread_mutex_init(&mut, 0);
-	pthread_mutex_init(&countMut, 0);
 	srand((unsigned) time(0));
 	
 	if (!didAllocMap) {
@@ -110,6 +108,7 @@ void joinThreads(pthread_t *tids) {
 void *testManager(void *args) {
 	pthread_mutex_lock(&mut);
 	int pid = allocate_pid();
+	count += 1;
 	pthread_mutex_unlock(&mut);
 	
 	if (pid == -1) {
@@ -118,9 +117,6 @@ void *testManager(void *args) {
 	}
 	
 	pid_t tid = pthread_self();
-	pthread_mutex_lock(&countMut);
-	count += 1;
-	pthread_mutex_unlock(&countMut);
 	
 	int sleepTime = rand() % 5;
 	printf("Sleeping Time .%d secs; Thread id = %d; Counter Value = %d\n", sleepTime, tid, count);
@@ -129,6 +125,7 @@ void *testManager(void *args) {
 	
 	pthread_mutex_lock(&mut);
 	release_pid(pid);
+	count -= 1;
 	pthread_mutex_unlock(&mut);
 	
 	pthread_exit(0);
