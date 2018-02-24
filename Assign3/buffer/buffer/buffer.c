@@ -17,8 +17,8 @@ buffer_item buffer[BUFFER_SIZE];
 int buf_front;
 int buf_back;
 pthread_mutex_t mut;
-sem_t *full;
-sem_t *empty;
+sem_t full;
+sem_t empty;
 
 int main(int argc, const char **argv) {
 	if(argc != 4) {
@@ -31,13 +31,11 @@ int main(int argc, const char **argv) {
 	int consumerCount = atoi(argv[3]);
 	pthread_t *producerTIDs = createThreads(producer, producerCount);
 	pthread_t *consumerTIDs = createThreads(consumer, consumerCount);
-	joinThreads(producerTIDs);
-	joinThreads(consumerTIDs);
 	
 	srand((unsigned)time(0));
 	pthread_mutex_init(&mut, 0);
-	full = sem_open(0, 0);
-	empty = sem_open(0, 5);
+	sem_init(&full, 0, 0);
+	sem_init(&empty, 0, 5);
 	sleep(sleepTime);
 	return 0;
 }
@@ -85,22 +83,22 @@ void *consumer(void *param) {
 }
 
 int insert_item(buffer_item item) {
-	sem_wait(empty);
+	sem_wait(&empty);
 	pthread_mutex_lock(&mut);
-	buffer[buf_front] = item;
-	buf_front = (buf_front + 1) % BUFFER_SIZE;
+	buffer[buf_front++] = item;
+	buf_front %= BUFFER_SIZE;
 	pthread_mutex_unlock(&mut);
-	sem_post(full);
+	sem_post(&full);
 	return 0;
 }
 
 int remove_item(buffer_item *item) {
-	sem_wait(empty);
+	sem_wait(&empty);
 	pthread_mutex_lock(&mut);
 	*item = buffer[buf_back];
-	buffer[buf_back] = -1;
-	buf_front = (buf_back - 1) % BUFFER_SIZE;
+	buffer[buf_back--] = -1;
+	buf_front %= BUFFER_SIZE;
 	pthread_mutex_unlock(&mut);
-	sem_post(full);
+	sem_post(&full);
 	return 0;
 }
