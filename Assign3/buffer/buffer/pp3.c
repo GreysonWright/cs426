@@ -28,6 +28,7 @@ int insert_item(buffer_item);
 int remove_item(buffer_item *);
 
 buffer_item buffer[BUFFER_SIZE];
+int bufCount;
 int in;
 int out;
 sem_t mut;
@@ -49,12 +50,10 @@ int main(int argc, const char **argv) {
 	initBuffer();
 	initSemaphores();
 	srand((unsigned)time(0));
-	
-	printf("buffer size = %d\n", BUFFER_SIZE);
-	
+
 	(void)createThreads(producer, args[1]);
 	(void)createThreads(consumer, args[2]);
-	
+
 	sleep(args[0]);
 	return 0;
 }
@@ -83,6 +82,7 @@ void initBuffer(void) {
 	for (i = 0; i < BUFFER_SIZE; i++) {
 		buffer[i] = -1;
 	}
+	bufCount = 0;
 	in = 0;
 	out = 0;
 }
@@ -144,6 +144,8 @@ int insert_item(buffer_item item) {
 	}
 	buffer[in] = item;
 	in = (in + 1) % BUFFER_SIZE;
+	bufCount++;
+	printf("Buffer size: %d\n", bufCount);
 	sem_post(&mut);
 	sem_post(&full);
 	return 0;
@@ -163,6 +165,8 @@ int remove_item(buffer_item *item) {
 	}
 	buffer[out] = -1;
 	out = (out + 1) % BUFFER_SIZE;
+	bufCount--;
+	printf("Buffer size: %d\n", bufCount);
 	sem_post(&mut);
 	sem_post(&empty);
 	return 0;

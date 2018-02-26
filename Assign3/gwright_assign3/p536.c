@@ -70,9 +70,14 @@ void release_pid(int pid) {
 	removeProcess(pidManager, pid);
 }
 
+typedef struct TID {
+	int id;
+} TID;
+
 void createThreads(pthread_t *);
 void joinThreads(pthread_t *);
 void *testManager(void *);
+TID *newTID(int);
 
 pthread_mutex_t mut;
 int count;
@@ -97,8 +102,15 @@ int main() {
 void createThreads(pthread_t *tids) {
 	int i = 0;
 	for (i = 0; i < 100; i++) {
-		pthread_create(&tids[i], 0, testManager, 0);
+		TID *tid = newTID(i);
+		pthread_create(&tids[i], 0, testManager, tid);
 	}
+}
+
+TID *newTID(int id) {
+	TID *tid = malloc(sizeof *tid);
+	tid->id = id;
+	return tid;
 }
 
 void joinThreads(pthread_t *tids) {
@@ -109,6 +121,7 @@ void joinThreads(pthread_t *tids) {
 }
 
 void *testManager(void *args) {
+	TID *tid = args;
 	pthread_mutex_lock(&mut);
 	int pid = allocate_pid();
 	count += 1;
@@ -119,10 +132,8 @@ void *testManager(void *args) {
 		pthread_exit(0);
 	}
 	
-	unsigned long tid = (unsigned long)pthread_self();
-	
 	int sleepTime = rand() % 5;
-	printf("Sleeping Time .%d secs; Thread id = %lu; Counter Value = %d\n", sleepTime, (unsigned long)tid, count);
+	printf("Allocated Sleeping Time .%d secs; Thread id = %d; Counter Value = %d\n", sleepTime, tid->id, count);
 	
 	sleep(sleepTime);
 	
@@ -130,6 +141,7 @@ void *testManager(void *args) {
 	release_pid(pid);
 	count -= 1;
 	pthread_mutex_unlock(&mut);
+	printf("Released Sleeping Time .%d secs; Thread id = %d; Counter Value = %d\n", sleepTime, tid->id, count);
 	
 	pthread_exit(0);
 }
