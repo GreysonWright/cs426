@@ -6,10 +6,9 @@
 //  Copyright © 2018 Greyson Wright. All rights reserved.
 //
 
-#include "buffer.h"
+#include "pp3.h"
 
 pthread_t *createThreads(void *(*)(void *), int );
-void joinThreads(pthread_t *);
 void *producer(void *param);
 void *consumer(void *param);
 
@@ -34,18 +33,12 @@ int main(int argc, const char **argv) {
 	}
 	in = 0;
 	out = 0;
-	mut = 1;
-	full = 0;
-	empty = BUFFER_SIZE;
 	sem_init(&mut, 0, 1);
 	sem_init(&full, 0, 0);
 	sem_init(&empty, 0, BUFFER_SIZE);
 	srand((unsigned)time(0));
-	pthread_t *producerTIDs = createThreads(producer, producerCount);
-	pthread_t *consumerTIDs = createThreads(consumer, consumerCount);
-	joinThreads(producerTIDs);
-	joinThreads(consumerTIDs);
-	
+	(void)createThreads(producer, producerCount);
+	(void)createThreads(consumer, consumerCount);
 	sleep(sleepTime);
 	return 0;
 }
@@ -58,12 +51,6 @@ pthread_t *createThreads(void *(*runner)(void *), int count) {
 	return tids;
 }
 
-void joinThreads(pthread_t *tids) {
-	for (int i = 0; i < 100; i++) {
-		pthread_join(tids[i], 0);
-	}
-}
-
 void *producer(void *param) {
 	buffer_item item;
 	while (1) {
@@ -73,7 +60,8 @@ void *producer(void *param) {
 		if (insert_item(item) == -1) {
 			fprintf(stderr, "Error inserting item.\n");
 		} else {
-			printf("producer produced %d\n", item);
+			unsigned long tid = (unsigned long)pthread_self();
+			printf("%lu produced %d\n", tid, item);
 		}
 	}
 }
@@ -86,35 +74,45 @@ void *consumer(void *param) {
 		if (remove_item(&item) == -1) {
 			fprintf(stderr, "Error removing item.\n");
 		} else {
-			printf("consumer consumed %d\n", item);
+			unsigned long tid = (unsigned long)pthread_self();
+			printf("%lu consumed %d\n", tid, item);
 		}
 	}
 }
 
 int insert_item(buffer_item item) {
+	unsigned long tid = (unsigned long)pthread_self();
+	printf("%lu waiting to insert\n", tid);
 	sem_wait(&empty);
 	sem_wait(&mut);
-	int error = buffer[in] != -1;
+	printf("%lu signaled to insert\n", tid);
+	if (buffer[in] != -1) {
+		sem_post(&mut);
+		sem_post(&full);
+		return -1;
+	}
 	buffer[in] = item;
 	in = (in + 1) % BUFFER_SIZE;
 	sem_post(&mut);
 	sem_post(&full);
-	if (error) {
-		return -1;
-	}
 	return 0;
 }
 
 int remove_item(buffer_item *item) {
+	unsigned long tid = (unsigned long)pthread_self();
+	printf("%lu waiting to insert\n", tid);
 	sem_wait(&full);
 	sem_wait(&mut);
+	printf("%lu signaled to remove\n", tid);
 	*item = buffer[out];
+	if (*item == -1) {
+		sem_post(&mut);
+		sem_post(&empty);
+		return -1;
+	}
 	buffer[out] = -1;
 	out = (out + 1) % BUFFER_SIZE;
 	sem_post(&mut);
 	sem_post(&empty);
-	if (*item == -1) {
-		return -1;
-	}
 	return 0;
 }

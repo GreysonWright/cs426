@@ -116,10 +116,10 @@ void *testManager(void *args) {
 		pthread_exit(0);
 	}
 	
-	pid_t tid = pthread_self();
+	unsigned long tid = (unsigned long)pthread_self();
 	
 	int sleepTime = rand() % 5;
-	printf("Sleeping Time .%d secs; Thread id = %d; Counter Value = %d\n", sleepTime, tid, count);
+	printf("Sleeping Time .%d secs; Thread id = %lu; Counter Value = %d\n", sleepTime, (unsigned long)tid, count);
 	
 	sleep(sleepTime);
 	
