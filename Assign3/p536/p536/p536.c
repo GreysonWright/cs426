@@ -122,7 +122,7 @@ void *testManager(void *args) {
 	unsigned long tid = (unsigned long)pthread_self();
 	
 	int sleepTime = rand() % 5;
-	printf("Sleeping Time .%d secs; Thread id = %lu; Counter Value = %d\n", sleepTime, (unsigned long)tid, count);
+	printf("Sleeping Time .%d secs; PID = %d Thread id = %lu; Counter Value = %d\n", sleepTime, pid, tid, count);
 	
 	sleep(sleepTime);
 	
@@ -130,6 +130,7 @@ void *testManager(void *args) {
 	release_pid(pid);
 	count -= 1;
 	pthread_mutex_unlock(&mut);
+	printf("Sleeping Time .%d secs; PID = %d Thread id = %lu; Counter Value = %d\n", sleepTime, pid, tid, count);
 	
 	pthread_exit(0);
 }
