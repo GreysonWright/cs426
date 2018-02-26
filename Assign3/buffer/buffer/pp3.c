@@ -6,11 +6,25 @@
 //  Copyright © 2018 Greyson Wright. All rights reserved.
 //
 
-#include "pp3.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <sys/types.h>
 
+#define BUFFER_SIZE 5
+
+typedef int buffer_item;
+
+int *getArgs(const char **);
+void initBuffer(void);
+void initSemaphores(void);
 pthread_t *createThreads(void *(*)(void *), int );
 void *producer(void *param);
 void *consumer(void *param);
+int insert_item(buffer_item);
+int remove_item(buffer_item *);
 
 buffer_item buffer[BUFFER_SIZE];
 int in;
@@ -21,28 +35,52 @@ sem_t empty;
 
 int main(int argc, const char **argv) {
 	if(argc != 4) {
-		fprintf(stderr, "insufficient number of arguments.\n");
+		fprintf(stderr, "Insufficient number of arguments.\n");
 		return -1;
 	}
 	
+	int *args = getArgs(argv);
+	
+	for (int i = 0; i < 3; i++) {
+		if (args[i] < 0) {
+			fprintf(stderr, "Negative integers not allowed.\n");
+			return -1;
+		}
+	}
+	
+	initBuffer();
+	initSemaphores();
+	srand((unsigned)time(0));
+	
 	printf("buffer size = %d\n", BUFFER_SIZE);
 	
-	int sleepTime = atoi(argv[1]);
-	int producerCount = atoi(argv[2]);
-	int consumerCount = atoi(argv[3]);
+	(void)createThreads(producer, args[1]);
+	(void)createThreads(consumer, args[3]);
+	
+	sleep(args[0]);
+	return 0;
+}
+
+int *getArgs(const char **argv) {
+	int *args = malloc(3 * sizeof *args);
+	for (int i = 0; i < 3; i++) {
+		args[i] = atoi(argv[i + 1]);
+	}
+	return args;
+}
+
+void initBuffer(void) {
 	for (int i = 0; i < BUFFER_SIZE; i++) {
 		buffer[i] = -1;
 	}
 	in = 0;
 	out = 0;
+}
+
+void initSemaphores(void) {
 	sem_init(&mut, 0, 1);
 	sem_init(&full, 0, 0);
 	sem_init(&empty, 0, BUFFER_SIZE);
-	srand((unsigned)time(0));
-	(void)createThreads(producer, producerCount);
-	(void)createThreads(consumer, consumerCount);
-	sleep(sleepTime);
-	return 0;
 }
 
 pthread_t *createThreads(void *(*runner)(void *), int count) {
@@ -102,7 +140,7 @@ int insert_item(buffer_item item) {
 
 int remove_item(buffer_item *item) {
 	unsigned long tid = (unsigned long)pthread_self();
-	printf("%lu waiting to insert\n", tid);
+	printf("%lu waiting to remove\n", tid);
 	sem_wait(&full);
 	sem_wait(&mut);
 	printf("%lu signaled to remove\n", tid);
