@@ -25,6 +25,8 @@ int main(int argc, const char **argv) {
 		return -1;
 	}
 	
+	printf("buffer size = %d", BUFFER_SIZE);
+	
 	int sleepTime = atoi(argv[1]);
 	int producerCount = atoi(argv[2]);
 	int consumerCount = atoi(argv[3]);
