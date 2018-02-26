@@ -18,6 +18,7 @@
 typedef int buffer_item;
 
 int *getArgs(const char **);
+int checkArgs(int *);
 void initBuffer(void);
 void initSemaphores(void);
 pthread_t *createThreads(void *(*)(void *), int );
@@ -40,12 +41,9 @@ int main(int argc, const char **argv) {
 	}
 	
 	int *args = getArgs(argv);
-	
-	for (int i = 0; i < 3; i++) {
-		if (args[i] < 0) {
-			fprintf(stderr, "Negative integers not allowed.\n");
-			return -1;
-		}
+	if (!checkArgs(args)) {
+		fprintf(stderr, "Negative integers not allowed.\n");
+		return -1;
 	}
 	
 	initBuffer();
@@ -55,7 +53,7 @@ int main(int argc, const char **argv) {
 	printf("buffer size = %d\n", BUFFER_SIZE);
 	
 	(void)createThreads(producer, args[1]);
-	(void)createThreads(consumer, args[3]);
+	(void)createThreads(consumer, args[2]);
 	
 	sleep(args[0]);
 	return 0;
@@ -67,6 +65,15 @@ int *getArgs(const char **argv) {
 		args[i] = atoi(argv[i + 1]);
 	}
 	return args;
+}
+
+int checkArgs(int *args) {
+	for (int i = 0; i < 3; i++) {
+		if (args[i] < 0) {
+			return 0;
+		}
+	}
+	return 1;
 }
 
 void initBuffer(void) {
