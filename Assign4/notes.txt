@@ -1,0 +1,5 @@
+create a min start time queue for each of the 4 priority levels
+read file and store in appropriate queue
+if priority queue is empty and time is arrival time execute until queue is empty or arrival time is not equal to time
+execute queues by arrival time and priority on quantum
+sigkill sigtrap when finished
