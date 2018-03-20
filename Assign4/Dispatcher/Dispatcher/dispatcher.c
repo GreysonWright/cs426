@@ -28,13 +28,19 @@ int main(int argc, const char **argv) {
 	}
 	fclose(input);
 	
-	for (int i = 0; i < 4; i++) {
-		Job *peekJob = peekQueue(queues[i]);
-		
+	while (sizeQueue(queues[0]) + sizeQueue(queues[1]) + sizeQueue(queues[2]) + sizeQueue(queues[3]) > 0) {
+		int minPriority = 0;
+		for (int i = 0; i < 4; i++) {
+			Job *peekJob = peekQueue(queues[i]);
+			Job *minJob = peekQueue(queues[minPriority]);
+			if (getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
+				minPriority = i;
+			}
+		}
+		char *args[2] = {"./process", ""};
+		execArgs(args);
 	}
 	
-	char *args[2] = {"./process", ""};
-	execArgs(args);
 	return 0;
 }
 
