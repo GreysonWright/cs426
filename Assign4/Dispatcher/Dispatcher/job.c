@@ -52,6 +52,5 @@ void displayJob(FILE *file, void *job) {
 	int arrivalTime = getArrivalTimeJob(job);
 	int priority = getPriorityJob(job);
 	int processorTime = getProcessorTimeJob(job);
-	fprintf(stdout, "%d", arrivalTime);
-//	fprintf(file, "pid: %d, arrivalTime: %d, priority: %d, processorTime: %d", pid, arrivalTime, priority, processorTime);
+	fprintf(file, "{pid: %d, arrivalTime: %d, priority: %d, processorTime: %d}", pid, arrivalTime, priority, processorTime);
 }

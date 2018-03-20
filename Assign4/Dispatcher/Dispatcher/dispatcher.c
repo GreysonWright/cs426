@@ -12,16 +12,39 @@
 #include "queue.h"
 #include "job.h"
 
+void execArgs(char **);
+
 int main(int argc, const char **argv) {
+	queue *queues[4] = {newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob)};
 	FILE *input = fopen(argv[1], "r");
-	int arrivalTime = readInt(input);
-	int priority = readInt(input);
-	int processorTime = readInt(input);
 	while (!feof(input)) {
-		arrivalTime = readInt(input);
-		priority = readInt(input);
-		processorTime = readInt(input);
+		int arrivalTime = readInt(input);
+		readChar(input);
+		int priority = readInt(input);
+		readChar(input);
+		int processorTime = readInt(input);
+		Job *job = newJob(arrivalTime, priority, processorTime);
+		enqueue(queues[priority], job);
 	}
 	fclose(input);
+	
+	for (int i = 0; i < 4; i++) {
+		Job *peekJob = peekQueue(queues[i]);
+		
+	}
+	
+	char *args[2] = {"./process", ""};
+	execArgs(args);
 	return 0;
+}
+
+void execArgs(char **args) {
+	pid_t pid = fork();
+	if (pid < 0) {
+		fprintf(stderr, "Fork Failed\n");
+	} else if (pid == 0) {
+		execvp(args[0], args);
+	} else if (pid > 0) {
+		while (pid != wait(0));
+	}
 }
