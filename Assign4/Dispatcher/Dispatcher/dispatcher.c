@@ -41,7 +41,7 @@ int main(int argc, const char **argv) {
 		readChar(input);
 		int processorTime = readInt(input);
 		Job *job = newJob(arrivalTime, priority, processorTime);
-		enqueue(waitingQueue, job);
+		enqueueMin(waitingQueue, job);
 	}
 	fclose(input);
 	
