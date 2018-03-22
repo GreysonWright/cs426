@@ -21,6 +21,7 @@ int isSuspendedJob(Job *);
 int getPIDJob(Job *);
 void setPIDJob(Job *, pid_t);
 int getArrivalTimeJob(Job *);
+void incrementArrivalTimeJob(Job *);
 int getPriorityJob(Job *);
 void lowerPriorityJob(Job *);
 int getProcessorTimeJob(Job *);

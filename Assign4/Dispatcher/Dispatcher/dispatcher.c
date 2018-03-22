@@ -63,10 +63,14 @@ int main(int argc, const char **argv) {
 		}
 		
 		if (!isSystemJob(currentJob)) {
+			incrementArrivalTimeJob(currentJob); 
 			lowerPriorityJob(currentJob);
-			decrementProcessorTimeJob(currentJob);
 			sleep(1);
+		} else {
+			sleep(getProcessorTimeJob(currentJob));
 		}
+		
+		decrementProcessorTimeJob(currentJob);
 		
 		if (getProcessorTimeJob(currentJob) > 0) {
 			suspendProcess(currentJob);

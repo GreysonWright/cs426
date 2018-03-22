@@ -46,12 +46,16 @@ int getArrivalTimeJob(Job *job) {
 	return job->arrivalTime;
 }
 
+void incrementArrivalTimeJob(Job *job) {
+	job->arrivalTime += 1;
+}
+
 int getPriorityJob(Job *job) {
 	return job->priority;
 }
 
 void lowerPriorityJob(Job *job) {
-	max(3, job->priority + 1);
+	job->priority = max(3, job->priority + 1);
 }
 
 int min(int a, int b) {
@@ -63,7 +67,7 @@ int getProcessorTimeJob(Job *job) {
 }
 
 void decrementProcessorTimeJob(Job *job) {
-	max(0, job->processorTime - 1);
+	job->processorTime = max(0, job->processorTime - 1);
 }
 
 int max(int a, int b) {
