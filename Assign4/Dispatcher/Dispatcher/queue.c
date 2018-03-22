@@ -28,7 +28,7 @@ queue *newQueue(void (*d)(FILE *, void *), int (*compare)(void *, void *)) {
 void enqueueMin(queue *items, void *value) {
 	for (int i = 0; i < sizeSLL(items->list); i++) {
 		void *currentItem = getSLL(items->list, i);
-		if (items->compare(currentItem, value) >= 0) {
+		if (items->compare(currentItem, value) > 0) {
 			insertSLL(items->list, i, value);
 			return;
 		}

@@ -87,9 +87,9 @@ int comparePriorityJob(void *left, void *right) {
 }
 
 void displayJob(FILE *file, void *job) {
-	int pid = getPIDJob(job);
+	long pid = (long)getPIDJob(job);
 	int arrivalTime = getArrivalTimeJob(job);
 	int priority = getPriorityJob(job);
 	int processorTime = getProcessorTimeJob(job);
-	fprintf(file, "{pid: %d, arrivalTime: %d, priority: %d, processorTime: %d}", pid, arrivalTime, priority, processorTime);
+	fprintf(file, "{pid: %ld, arrivalTime: %d, priority: %d, processorTime: %d}", pid, arrivalTime, priority, processorTime);
 }
