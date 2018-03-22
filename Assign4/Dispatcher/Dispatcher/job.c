@@ -55,7 +55,7 @@ int getPriorityJob(Job *job) {
 }
 
 void lowerPriorityJob(Job *job) {
-	job->priority = max(3, job->priority + 1);
+	job->priority = min(3, job->priority + 1);
 }
 
 int min(int a, int b) {
