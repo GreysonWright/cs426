@@ -15,6 +15,11 @@
 void execArgs(char **);
 
 int main(int argc, const char **argv) {
+	if (argc < 2) {
+		fprintf(stderr, "Please include input file.\n");
+		return -1;
+	}
+	
 	queue *queues[4] = {newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob)};
 	FILE *input = fopen(argv[1], "r");
 	while (!feof(input)) {
@@ -33,7 +38,7 @@ int main(int argc, const char **argv) {
 		for (int i = 0; i < 4; i++) {
 			Job *peekJob = peekQueue(queues[i]);
 			Job *minJob = peekQueue(queues[minPriority]);
-			if (getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
+			if (peekJob && minJob && getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
 				minPriority = i;
 			}
 		}
