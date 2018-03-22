@@ -16,10 +16,10 @@
 #include "job.h"
 
 int doJobsExist(queue *);
-void startProcess(Job *);
-void restartProcess(Job *);
-void suspendProcess(Job *);
-void terminateProcesss(Job *);
+Job *startProcess(Job *);
+Job *restartProcess(Job *);
+Job *suspendProcess(Job *);
+Job *terminateProcesss(Job *);
 
 int currentTime;
 
@@ -46,7 +46,7 @@ int main(int argc, const char **argv) {
 	fclose(input);
 	
 	Job *currentJob = 0;
-	while (doJobsExist(jobQeue) || doJobsExist(waitingQueue)) {
+	while (currentJob || doJobsExist(jobQeue) || doJobsExist(waitingQueue)) {
 		while (sizeQueue(waitingQueue) && getArrivalTimeJob(peekQueue(waitingQueue)) <= currentTime) {
 			Job *arrivingJob = dequeue(waitingQueue);
 			enqueueMin(jobQeue, arrivingJob);
@@ -88,33 +88,44 @@ int doJobsExist(queue *queue) {
 	return sum;
 }
 
-void startProcess(Job *job) {
-	pid_t pid = fork();
-	if (pid < 0) {
+Job *startProcess(Job *job) {
+	setPIDJob(job, fork());
+	if (getPIDJob(job) < 0) {
 		fprintf(stderr, "Fork Failed\n");
-	} else if (pid == 0) {
-		char *args[2] = {"./process", "20"};
+		return 0;
+	} else if (getPIDJob(job) == 0) {
+		char *args[2] = {"./process", 0};
 		execvp(args[0], args);
+		return job;
 	} else {
-		setPIDJob(job, pid);
+		return job;
 	}
 }
 
-void restartProcess(Job *job) {
-	fflush(stdout);
-	kill(getPIDJob(job), SIGCONT);
+Job *restartProcess(Job *job) {
+	if (kill(getPIDJob(job), SIGCONT)) {
+		printf("Could not restart process %ld.\n", (long)getPIDJob(job));
+		return 0;
+	}
+	return job;
 }
 
-void suspendProcess(Job *job) {
-	kill(getPIDJob(job), SIGSTOP);
-	int status = 0;
-	fflush(stdout);
+Job *suspendProcess(Job *job) {
+	if (kill(getPIDJob(job), SIGTSTP)) {
+		printf("Could not suspend process %ld.\n", (long)getPIDJob(job));
+		return 0;
+	}
+	int status;
 	waitpid(getPIDJob(job), &status, WUNTRACED);
+	return job;
 }
 
-void terminateProcesss(Job *job) {
-	kill(getPIDJob(job), SIGINT);
-	fflush(stdout);
-	int status = 0;
+Job *terminateProcesss(Job *job) {
+	if (kill(getPIDJob(job), SIGINT)) {
+		printf("Could not terminate process %ld.\n", (long)getPIDJob(job));
+		return 0;
+	}
+	int status;
 	waitpid(getPIDJob(job), &status, WUNTRACED);
+	return job;
 }
