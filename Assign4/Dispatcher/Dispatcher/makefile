@@ -1,14 +1,15 @@
 SOBJS = sigtrap.o
 OBJS = dispatcher.o scanner.o sll.o queue.o job.o
 OPTS = -Wall -g -std=c99 -Wextra
+SOPTS = -Wall -g -Wextra
 
 all: sigtrap dispatcher
 
 sigtrap : $(SOBJS)
-		gcc $(OPTS) $(SOBJS) -o process
+		gcc $(SOPTS) $(SOBJS) -o process
 
 sigtrap.o : sigtrap.c
-		gcc $(OPTS) -c sigtrap.c
+		gcc $(SOPTS) -c sigtrap.c
 
 dispatcher : $(OBJS)
 		gcc $(OPTS) $(OBJS) -o dispatcher

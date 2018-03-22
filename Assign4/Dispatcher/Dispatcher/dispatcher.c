@@ -15,9 +15,11 @@
 #include "job.h"
 
 void startProcess(Job *);
+void restartProcess(Job *);
+void suspendProcess(Job *);
+void terminateProcesss(Job *);
 
 queue *queues[4];
-int cpuTime;
 
 int main(int argc, const char **argv) {
 	if (argc < 2) {
@@ -25,7 +27,6 @@ int main(int argc, const char **argv) {
 		return -1;
 	}
 	
-	cpuTime = 0;
 	queues[0] = newQueue(displayJob, compareJob);
 	queues[1] = newQueue(displayJob, compareJob);
 	queues[2] = newQueue(displayJob, compareJob);
@@ -43,18 +44,39 @@ int main(int argc, const char **argv) {
 	}
 	fclose(input);
 	
-//	while (sizeQueue(queues[0]) + sizeQueue(queues[1]) + sizeQueue(queues[2]) + sizeQueue(queues[3]) > 0) {
+	while (sizeQueue(queues[0]) + sizeQueue(queues[1]) + sizeQueue(queues[2]) + sizeQueue(queues[3]) > 0) {
 		int minPriority = 0;
-		Job *minJob = 0;
+		Job *currentJob = 0;
 		for (int i = 0; i < 4; i++) {
 			Job *peekJob = peekQueue(queues[i]);
-			minJob = peekQueue(queues[minPriority]);
+			Job *minJob = peekQueue(queues[minPriority]);
 			if (peekJob && minJob && getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
 				minPriority = i;
 			}
 		}
-		startProcess(minJob);
-//	}
+		
+		currentJob = dequeue(queues[minPriority]);
+		if (isSuspendedJob(currentJob)) {
+			restartProcess(currentJob);
+		} else {
+			startProcess(currentJob);
+		}
+		
+		if (!isSystemJob(currentJob)) {
+			lowerPriorityJob(currentJob);
+			decrementProcessorTimeJob(currentJob);
+			sleep(1);
+		}
+		
+		if (getProcessorTimeJob(currentJob) > 0) {
+			suspendProcess(currentJob);
+			enqueue(queues[getPriorityJob(currentJob)], currentJob);
+		} else {
+			terminateProcesss(currentJob);
+		}
+		int status = 0;
+		waitpid(getPIDJob(currentJob), &status, WUNTRACED);
+	}
 	
 	return 0;
 }
@@ -64,14 +86,22 @@ void startProcess(Job *job) {
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
-		setPIDJob(job, getpid());
-		printf("%ld\n", (long)getPIDJob(job));
 		char *args[2] = {"./process", "5"};
 		execvp(args[0], args);
 	} else {
-		int status = 0;
-		printf("test\n");
-		waitpid(getPIDJob(job), &status, WUNTRACED);
-		printf("done\n");
+		setPIDJob(job, getpid());
 	}
+}
+
+void restartProcess(Job *job) {
+	
+	kill(getPIDJob(job), SIGCONT);
+}
+
+void suspendProcess(Job *job) {
+	kill(getPIDJob(job), SIGINT);
+}
+
+void terminateProcesss(Job *job) {
+	kill(getPIDJob(job), SIGSTOP);
 }

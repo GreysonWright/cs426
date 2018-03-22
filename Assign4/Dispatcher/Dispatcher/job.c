@@ -15,12 +15,23 @@ struct Job {
 	int processorTime;
 };
 
+int max(int a, int b);
+int min(int a, int b);
+
 Job *newJob(int arrivalTime, int priority, int processorTime) {
 	Job *job = malloc(sizeof *job);
 	job->arrivalTime = arrivalTime;
 	job->priority = priority;
 	job->processorTime = processorTime;
 	return job;
+}
+
+int isSystemJob(Job *job) {
+	return getPriorityJob(job) == 0;
+}
+
+int isSuspendedJob(Job *job) {
+	return getPIDJob(job) != 0;
 }
 
 int getPIDJob(Job *job) {
@@ -39,8 +50,24 @@ int getPriorityJob(Job *job) {
 	return job->priority;
 }
 
+void lowerPriorityJob(Job *job) {
+	max(3, job->priority + 1);
+}
+
+int min(int a, int b) {
+	return a < b ? a : b;
+}
+
 int getProcessorTimeJob(Job *job) {
 	return job->processorTime;
+}
+
+void decrementProcessorTimeJob(Job *job) {
+	max(0, job->processorTime - 1);
+}
+
+int max(int a, int b) {
+	return a > b ? a : b;
 }
 
 int compareJob(void *left, void *right) {

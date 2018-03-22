@@ -16,11 +16,15 @@
 typedef struct Job Job;
 
 Job *newJob(int, int, int);
+int isSystemJob(Job *);
+int isSuspendedJob(Job *);
 int getPIDJob(Job *);
 void setPIDJob(Job *, pid_t);
 int getArrivalTimeJob(Job *);
 int getPriorityJob(Job *);
+void lowerPriorityJob(Job *);
 int getProcessorTimeJob(Job *);
+void decrementProcessorTimeJob(Job *);
 int compareJob(void *, void *);
 void displayJob(FILE *, void *);
 #endif /* job_h */
