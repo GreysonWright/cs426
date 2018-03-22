@@ -32,6 +32,6 @@ job.o : job.c job.h
 clean :
 		rm -f $(OBJS) dispatcher sigtrap.o process
 
-test :	./dispatcher
+test :	./dispatcher ./sigtrap
 		./dispatcher input.txt
 		
