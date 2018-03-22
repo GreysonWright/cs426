@@ -23,5 +23,5 @@ clean :
 		rm -f $(OBJS) dispatcher
 
 test :	./dispatcher
-		./dispatcher
+		./dispatcher input.txt
 		
