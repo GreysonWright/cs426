@@ -11,12 +11,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 typedef struct Job Job;
 
 Job *newJob(int, int, int);
 int getPIDJob(Job *);
-void setPIDJob(Job *, int);
+void setPIDJob(Job *, pid_t);
 int getArrivalTimeJob(Job *);
 int getPriorityJob(Job *);
 int getProcessorTimeJob(Job *);

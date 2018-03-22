@@ -9,7 +9,7 @@
 #include "job.h"
 
 struct Job {
-	int pid;
+	pid_t pid;
 	int arrivalTime;
 	int priority;
 	int processorTime;
@@ -27,7 +27,7 @@ int getPIDJob(Job *job) {
 	return job->pid;
 }
 
-void setPIDJob(Job *job, int pid) {
+void setPIDJob(Job *job, pid_t pid) {
 	job->pid = pid;
 }
 

@@ -8,11 +8,16 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include "scanner.h"
 #include "queue.h"
 #include "job.h"
 
-void execArgs(char **);
+void startProcess(Job *);
+
+queue *queues[4];
+int cpuTime;
 
 int main(int argc, const char **argv) {
 	if (argc < 2) {
@@ -20,7 +25,12 @@ int main(int argc, const char **argv) {
 		return -1;
 	}
 	
-	queue *queues[4] = {newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob), newQueue(displayJob, compareJob)};
+	cpuTime = 0;
+	queues[0] = newQueue(displayJob, compareJob);
+	queues[1] = newQueue(displayJob, compareJob);
+	queues[2] = newQueue(displayJob, compareJob);
+	queues[3] = newQueue(displayJob, compareJob);
+
 	FILE *input = fopen(argv[1], "r");
 	while (!feof(input)) {
 		int arrivalTime = readInt(input);
@@ -35,27 +45,33 @@ int main(int argc, const char **argv) {
 	
 //	while (sizeQueue(queues[0]) + sizeQueue(queues[1]) + sizeQueue(queues[2]) + sizeQueue(queues[3]) > 0) {
 		int minPriority = 0;
+		Job *minJob = 0;
 		for (int i = 0; i < 4; i++) {
 			Job *peekJob = peekQueue(queues[i]);
-			Job *minJob = peekQueue(queues[minPriority]);
+			minJob = peekQueue(queues[minPriority]);
 			if (peekJob && minJob && getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
 				minPriority = i;
 			}
 		}
-		char *args[2] = {"./process", "5"};
-		execArgs(args);
+		startProcess(minJob);
 //	}
 	
 	return 0;
 }
 
-void execArgs(char **args) {
+void startProcess(Job *job) {
 	pid_t pid = fork();
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
+		setPIDJob(job, getpid());
+		printf("%ld\n", (long)getPIDJob(job));
+		char *args[2] = {"./process", "5"};
 		execvp(args[0], args);
-	} else if (pid > 0) {
-		while (pid != wait(0));
+	} else {
+		int status = 0;
+		printf("test\n");
+		waitpid(getPIDJob(job), &status, WUNTRACED);
+		printf("done\n");
 	}
 }
