@@ -62,14 +62,11 @@ int main(int argc, const char **argv) {
 				enqueueMin(jobQeue, currentJob);
 			}
 			currentJob = 0;
-		}
-		
-		if (currentJob == 0 && sizeQueue(jobQeue)) {
+		} else if (currentJob == 0 && sizeQueue(jobQeue)) {
 			currentJob = dequeue(jobQeue);
 			if (isSuspendedJob(currentJob)) {
 				restartProcess(currentJob);
 			} else {
-				fflush(stdout);
 				startProcess(currentJob);
 			}
 		}
