@@ -89,12 +89,11 @@ void startProcess(Job *job) {
 		char *args[2] = {"./process", "5"};
 		execvp(args[0], args);
 	} else {
-		setPIDJob(job, getpid());
+		setPIDJob(job, pid);
 	}
 }
 
 void restartProcess(Job *job) {
-	
 	kill(getPIDJob(job), SIGCONT);
 }
 
