@@ -10,11 +10,16 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <stdlib.h>
 #include "scanner.h"
 #include "queue.h"
 #include "job.h"
 
+int doJobsExist(void);
+Job *findMinJob(void);
 void startProcess(Job *);
+char *intToString(int);
+int countDigits(int);
 void restartProcess(Job *);
 void suspendProcess(Job *);
 void terminateProcesss(Job *);
@@ -44,33 +49,25 @@ int main(int argc, const char **argv) {
 	}
 	fclose(input);
 	
-	while (sizeQueue(queues[0]) + sizeQueue(queues[1]) + sizeQueue(queues[2]) + sizeQueue(queues[3]) > 0) {
-		int minPriority = 0;
-		Job *currentJob = 0;
-		for (int i = 0; i < 4; i++) {
-			Job *peekJob = peekQueue(queues[i]);
-			Job *minJob = peekQueue(queues[minPriority]);
-			if (peekJob && minJob && getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
-				minPriority = i;
-			}
-		}
+	while (doJobsExist()) {
+		Job *currentJob = findMinJob();
 		
-		currentJob = dequeue(queues[minPriority]);
 		if (isSuspendedJob(currentJob)) {
 			restartProcess(currentJob);
 		} else {
+			fflush(stdout);
 			startProcess(currentJob);
 		}
 		
 		if (!isSystemJob(currentJob)) {
 			incrementArrivalTimeJob(currentJob); 
 			lowerPriorityJob(currentJob);
+			decrementProcessorTimeJob(currentJob);
 			sleep(1);
 		} else {
 			sleep(getProcessorTimeJob(currentJob));
+			setProcessorTimeJob(currentJob, 0);
 		}
-		
-		decrementProcessorTimeJob(currentJob);
 		
 		if (getProcessorTimeJob(currentJob) > 0) {
 			suspendProcess(currentJob);
@@ -78,11 +75,28 @@ int main(int argc, const char **argv) {
 		} else {
 			terminateProcesss(currentJob);
 		}
-		int status = 0;
-		waitpid(getPIDJob(currentJob), &status, WUNTRACED);
 	}
-	
 	return 0;
+}
+
+int doJobsExist() {
+	int sum = 0;
+	for (int i = 0; i < 4; i++) {
+		sum += sizeQueue(queues[i]);
+	}
+	return sum;
+}
+
+Job *findMinJob() {
+	int minPriority = 0;
+	for (int i = 0; i < 4; i++) {
+		Job *peekJob = peekQueue(queues[i]);
+		Job *minJob = peekQueue(queues[minPriority]);
+		if (peekJob && minJob && getArrivalTimeJob(peekJob) < getArrivalTimeJob(minJob)) {
+			minPriority = i;
+		}
+	}
+	return dequeue(queues[minPriority]);
 }
 
 void startProcess(Job *job) {
@@ -90,11 +104,27 @@ void startProcess(Job *job) {
 	if (pid < 0) {
 		fprintf(stderr, "Fork Failed\n");
 	} else if (pid == 0) {
-		char *args[2] = {"./process", "5"};
+		char *processorTimeString = intToString(getProcessorTimeJob(job));
+		char *args[2] = {"./process", processorTimeString};
 		execvp(args[0], args);
 	} else {
 		setPIDJob(job, pid);
 	}
+}
+
+char *intToString(int num) {
+	int digitCount = countDigits(num);
+	char *numString = malloc(digitCount + 1);
+	snprintf(numString, digitCount + 1, "%d", num);
+	numString[digitCount] = 0;
+	return numString;
+}
+
+int countDigits(int a) {
+	if (a == 0) {
+		return 0;
+	}
+	return countDigits(a / 10) + 1;
 }
 
 void restartProcess(Job *job) {
@@ -103,8 +133,12 @@ void restartProcess(Job *job) {
 
 void suspendProcess(Job *job) {
 	kill(getPIDJob(job), SIGINT);
+	int status = 0;
+	waitpid(getPIDJob(job), &status, WUNTRACED);
 }
 
 void terminateProcesss(Job *job) {
 	kill(getPIDJob(job), SIGSTOP);
+	int status = 0;
+	waitpid(getPIDJob(job), &status, WUNTRACED);
 }

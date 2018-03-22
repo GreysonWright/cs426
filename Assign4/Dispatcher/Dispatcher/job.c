@@ -66,6 +66,10 @@ int getProcessorTimeJob(Job *job) {
 	return job->processorTime;
 }
 
+void setProcessorTimeJob(Job *job, int time) {
+	job->processorTime = time;
+}
+
 void decrementProcessorTimeJob(Job *job) {
 	job->processorTime = max(0, job->processorTime - 1);
 }

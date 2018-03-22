@@ -25,6 +25,7 @@ void incrementArrivalTimeJob(Job *);
 int getPriorityJob(Job *);
 void lowerPriorityJob(Job *);
 int getProcessorTimeJob(Job *);
+void setProcessorTimeJob(Job *, int);
 void decrementProcessorTimeJob(Job *);
 int compareJob(void *, void *);
 void displayJob(FILE *, void *);
