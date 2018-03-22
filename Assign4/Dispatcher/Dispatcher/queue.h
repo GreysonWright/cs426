@@ -17,6 +17,7 @@ typedef struct queue queue;
 
 queue *newQueue(void (*)(FILE *, void *), int (*)(void *, void *));
 void enqueue(queue *, void *);
+void enqueueMin(queue *, void *);
 void *dequeue(queue *);
 void *peekQueue(queue *);
 int sizeQueue(queue *);

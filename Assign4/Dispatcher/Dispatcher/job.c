@@ -78,8 +78,12 @@ int max(int a, int b) {
 	return a > b ? a : b;
 }
 
-int compareJob(void *left, void *right) {
+int compareArrivalJob(void *left, void *right) {
 	return getArrivalTimeJob(left) - getArrivalTimeJob(right);
+}
+
+int comparePriorityJob(void *left, void *right) {
+	return getPriorityJob(left) - getPriorityJob(right);
 }
 
 void displayJob(FILE *file, void *job) {
