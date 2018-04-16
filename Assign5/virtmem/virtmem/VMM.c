@@ -42,8 +42,7 @@ signed char *backingStore;
 int main(int argc, const char **argv) {
 	int addressCount = 0;
 	int tlbHits = 0;
-	int pageFaults = 0;
-	unsigned char freePageCount = 0;
+	int pageFaultCount = 0;
 	char buffer[BUFFER_SIZE];
 	
 	if (argc != 2) {
@@ -66,9 +65,8 @@ int main(int argc, const char **argv) {
         } else {
             physicalPage = pageTable[logicalPage];
             if (physicalPage == -1) {
-                pageFaults++;
-                physicalPage = freePageCount;
-                freePageCount++;
+                physicalPage = pageFaultCount;
+				pageFaultCount++;
                 memcpy(mainMem + physicalPage * PAGE_SIZE, backingStore + logicalPage * PAGE_SIZE, PAGE_SIZE);
                 pageTable[logicalPage] = physicalPage;
             }
@@ -81,7 +79,7 @@ int main(int argc, const char **argv) {
 		addressCount++;
     }
 	
-	printStats(addressCount, pageFaults, tlbHits);
+	printStats(addressCount, pageFaultCount, tlbHits);
     return 0;
 }
 
@@ -114,13 +112,13 @@ int max(int a, int b) {
 
 void addTLB(unsigned char logical, unsigned char physical) {
 	TLBRow *row = &tlb[tlbIndex % TLB_SIZE];
-	tlbIndex++;
 	row->logical = logical;
 	row->physical = physical;
+	tlbIndex++;
 }
 
-void printStats(int addressCount, int pageFaults, int tlbHits) {
-	double pageFaultRate = pageFaults / (1. * addressCount);
+void printStats(int addressCount, int pageFaultCount, int tlbHits) {
+	double pageFaultRate = pageFaultCount / (1. * addressCount);
 	double tlbHitRate = tlbHits / (1. * addressCount);
-	printf("Number of Translated Addresses = %d\nPage Faults = %d\nPage Fault Rate = %.3f\nTLB Hits = %d\nTLB Hit Rate = %.3f\n", addressCount, pageFaults, pageFaultRate, tlbHits, tlbHitRate);
+	printf("Number of Translated Addresses = %d\nPage Faults = %d\nPage Fault Rate = %.3f\nTLB Hits = %d\nTLB Hit Rate = %.3f\n", addressCount, pageFaultCount, pageFaultRate, tlbHits, tlbHitRate);
 }
