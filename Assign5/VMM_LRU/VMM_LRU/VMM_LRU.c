@@ -116,11 +116,12 @@ void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
 }
 
 int findTLB(unsigned char logical_page, TLB *tlb) {
-	int i = 0;
-	for (; i < TLB_SIZE; i++) {
+	int index = findMinTLB(tlb);
+	int i = max((index - TLB_SIZE), 0);
+	for (; i < index; i++) {
 		TLBRow *row = &tlb->store[i % TLB_SIZE];
 		if (row->logical == logical_page) {
-			return i % TLB_SIZE;
+			return i;
 		}
 	}
 	return -1;
@@ -135,6 +136,7 @@ void insertTLB(unsigned char logical, unsigned char physical, TLB *tlb) {
 	TLBRow *row = &tlb->store[index];
 	row->logical = logical;
 	row->physical = physical;
+	tlb->frequency[index]++;
 }
 
 int findMinTLB(TLB *tlb) {

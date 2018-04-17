@@ -108,8 +108,8 @@ void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
 }
 
 int findTLB(unsigned char logical_page, TLB *tlb) {
-	int i;
-	for (i = max((tlb->index - TLB_SIZE), 0); i < tlb->index; i++) {
+	int i = max((tlb->index - TLB_SIZE), 0);
+	for (; i < tlb->index; i++) {
 		TLBRow *row = &tlb->store[i % TLB_SIZE];
 		if (row->logical == logical_page) {
 			return row->physical;
