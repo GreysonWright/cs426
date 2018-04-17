@@ -17,22 +17,26 @@
 #define FRAME_SIZE 256
 #define OFFSET_BITS 8
 #define MEM_SIZE FRAME_COUNT * FRAME_SIZE
-#define BUFFER_SIZE 10
 
 typedef struct TLBRow {
     unsigned char logical;
     unsigned char physical;
 } TLBRow;
 
+typedef struct TLB {
+	TLBRow store[TLB_SIZE];
+	int index;
+} TLB;
+
+TLB *newTLB(void);
 char *initBackingStore(void);
 void initPageTable(void);
 void insertPageTable(int, int, char *);
-int findTLB(unsigned char, TLBRow *);
+int findTLB(unsigned char, TLB *);
 int max(int, int);
-void insertTLB(unsigned char, unsigned char, TLBRow *);
+void insertTLB(unsigned char, unsigned char, TLB *);
 void printStats(int, int, int);
 
-int tlbIndex = 0;
 int pageTable[FRAME_COUNT];
 char memory[MEM_SIZE];
 
@@ -40,7 +44,7 @@ int main(int argc, const char **argv) {
 	int addressCount = 0;
 	int tlbHits = 0;
 	int pageFaultCount = 0;
-	TLBRow tlb[TLB_SIZE];
+	TLB *tlb = newTLB();
 	
 	if (argc != 2) {
         fprintf(stderr, "Please provide the correct arguments.\n");
@@ -79,6 +83,12 @@ int main(int argc, const char **argv) {
     return 0;
 }
 
+TLB *newTLB(void) {
+	TLB *tlb = malloc(sizeof *tlb);
+	tlb->index = 0;
+	return tlb;
+}
+
 char *initBackingStore(void) {
 	int backingFile = open("BACKING_STORE.bin", O_RDONLY);
 	char *backingStore = mmap(0, MEM_SIZE, PROT_READ, MAP_PRIVATE, backingFile, 0);
@@ -97,10 +107,10 @@ void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
 	pageTable[logicalPage] = physicalPage;
 }
 
-int findTLB(unsigned char logical_page, TLBRow *tlb) {
+int findTLB(unsigned char logical_page, TLB *tlb) {
 	int i;
-	for (i = max((tlbIndex - TLB_SIZE), 0); i < tlbIndex; i++) {
-		TLBRow *row = &tlb[i % TLB_SIZE];	
+	for (i = max((tlb->index - TLB_SIZE), 0); i < tlb->index; i++) {
+		TLBRow *row = &tlb->store[i % TLB_SIZE];
 		if (row->logical == logical_page) {
 			return row->physical;
 		}
@@ -112,8 +122,8 @@ int max(int a, int b) {
 	return a > b ? a : b;
 }
 
-void insertTLB(unsigned char logical, unsigned char physical, TLBRow *tlb) {
-	TLBRow *row = &tlb[tlbIndex++ % TLB_SIZE];
+void insertTLB(unsigned char logical, unsigned char physical, TLB *tlb) {
+	TLBRow *row = &tlb->store[tlb->index++ % TLB_SIZE];
 	row->logical = logical;
 	row->physical = physical;
 }
