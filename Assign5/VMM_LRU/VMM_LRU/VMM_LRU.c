@@ -66,7 +66,8 @@ int main(int argc, const char **argv) {
 		
         if (index != -1) {
             tlbHits++;
-			physicalPage = tlb->store[index].physical;
+			TLBRow *row = &tlb->store[index];
+			physicalPage = row->physical;
 			tlb->frequency[index]++;
         } else {
             physicalPage = pageTable[logicalPage];
