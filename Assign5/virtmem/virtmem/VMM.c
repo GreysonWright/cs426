@@ -24,24 +24,23 @@ typedef struct TLBRow {
     unsigned char physical;
 } TLBRow;
 
-void initBackingStore(void);
+char *initBackingStore(void);
 void initPageTable(void);
-void insertPageTable(int, int);
-int findTLB(unsigned char);
+void insertPageTable(int, int, char *);
+int findTLB(unsigned char, TLBRow *);
 int max(int, int);
-void insertTLB(unsigned char, unsigned char);
+void insertTLB(unsigned char, unsigned char, TLBRow *);
 void printStats(int, int, int);
 
-TLBRow tlb[TLB_SIZE];
 int tlbIndex = 0;
 int pageTable[FRAME_COUNT];
-char mainMem[MEM_SIZE];
-char *backingStore;
+char memory[MEM_SIZE];
 
 int main(int argc, const char **argv) {
 	int addressCount = 0;
 	int tlbHits = 0;
 	int pageFaultCount = 0;
+	TLBRow tlb[TLB_SIZE];
 	
 	if (argc != 2) {
         fprintf(stderr, "Please provide the correct arguments.\n");
@@ -49,7 +48,7 @@ int main(int argc, const char **argv) {
     }
 	
     FILE *input_fp = fopen(argv[1], "r");
-	initBackingStore();
+	char *backingStore = initBackingStore();
 	initPageTable();
 	
 	char addressString[10];
@@ -57,7 +56,7 @@ int main(int argc, const char **argv) {
         int logicalAddress = atoi(addressString);
         int offset = logicalAddress & 255;
         int logicalPage = (logicalAddress >> OFFSET_BITS) & 255;
-        int physicalPage = findTLB(logicalPage);
+        int physicalPage = findTLB(logicalPage, tlb);
 		
         if (physicalPage != -1) {
             tlbHits++;
@@ -65,13 +64,13 @@ int main(int argc, const char **argv) {
             physicalPage = pageTable[logicalPage];
             if (physicalPage == -1) {
 				physicalPage = pageFaultCount++;
-				insertPageTable(physicalPage, logicalPage);
+				insertPageTable(physicalPage, logicalPage, backingStore);
             }
-            insertTLB(logicalPage, physicalPage);
+            insertTLB(logicalPage, physicalPage, tlb);
         }
         
         int physicalAddress = (physicalPage << OFFSET_BITS) | offset;
-        char value = mainMem[physicalPage * FRAME_SIZE + offset];
+        char value = memory[physicalPage * FRAME_SIZE + offset];
         printf("Virtual address: %d Physical address: %d Value: %d\n", logicalAddress, physicalAddress, value);
 		addressCount++;
     }
@@ -80,9 +79,10 @@ int main(int argc, const char **argv) {
     return 0;
 }
 
-void initBackingStore(void) {
+char *initBackingStore(void) {
 	int backingFile = open("BACKING_STORE.bin", O_RDONLY);
-	backingStore = mmap(0, MEM_SIZE, PROT_READ, MAP_PRIVATE, backingFile, 0);
+	char *backingStore = mmap(0, MEM_SIZE, PROT_READ, MAP_PRIVATE, backingFile, 0);
+	return backingStore;
 }
 
 void initPageTable(void) {
@@ -92,12 +92,12 @@ void initPageTable(void) {
 	}
 }
 
-void insertPageTable(int physicalPage, int logicalPage) {
-	memcpy(mainMem + physicalPage * FRAME_SIZE, backingStore + logicalPage * FRAME_SIZE, FRAME_SIZE);
+void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
+	memcpy(memory + physicalPage * FRAME_SIZE, backingStore + logicalPage * FRAME_SIZE, FRAME_SIZE);
 	pageTable[logicalPage] = physicalPage;
 }
 
-int findTLB(unsigned char logical_page) {
+int findTLB(unsigned char logical_page, TLBRow *tlb) {
 	int i;
 	for (i = max((tlbIndex - TLB_SIZE), 0); i < tlbIndex; i++) {
 		TLBRow *row = &tlb[i % TLB_SIZE];	
@@ -112,7 +112,7 @@ int max(int a, int b) {
 	return a > b ? a : b;
 }
 
-void insertTLB(unsigned char logical, unsigned char physical) {
+void insertTLB(unsigned char logical, unsigned char physical, TLBRow *tlb) {
 	TLBRow *row = &tlb[tlbIndex++ % TLB_SIZE];
 	row->logical = logical;
 	row->physical = physical;
