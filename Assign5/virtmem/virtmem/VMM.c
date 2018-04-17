@@ -14,10 +14,8 @@
 
 #define TLB_SIZE 16
 #define PAGES 256
-#define PAGE_MASK 255
 #define PAGE_SIZE 256
 #define OFFSET_BITS 8
-#define OFFSET_MASK 255
 #define MEM_SIZE PAGES * PAGE_SIZE
 #define BUFFER_SIZE 10
 
@@ -56,8 +54,8 @@ int main(int argc, const char **argv) {
     
     while (fgets(buffer, BUFFER_SIZE, input_fp) != NULL) {
         int logicalAddress = atoi(buffer);
-        int offset = logicalAddress & OFFSET_MASK;
-        int logicalPage = (logicalAddress >> OFFSET_BITS) & PAGE_MASK;
+        int offset = logicalAddress & 255;
+        int logicalPage = (logicalAddress >> OFFSET_BITS) & 255;
         int physicalPage = searchTLB(logicalPage);
 		
         if (physicalPage != -1) {
