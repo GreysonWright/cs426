@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E75AD312084248E00945729 /* VMM_FIFO.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E75AD2E2084248E00945729 /* VMM_FIFO.c */; };
+		2E75AD312084248E00945729 /* fifo.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E75AD2E2084248E00945729 /* fifo.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		2E75AD232084247600945729 /* virtmem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = virtmem; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E75AD2D2084248E00945729 /* addresses.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = addresses.txt; sourceTree = "<group>"; };
-		2E75AD2E2084248E00945729 /* VMM_FIFO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = VMM_FIFO.c; sourceTree = "<group>"; };
+		2E75AD2E2084248E00945729 /* fifo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fifo.c; sourceTree = "<group>"; };
 		2E75AD302084248E00945729 /* BACKING_STORE.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = BACKING_STORE.bin; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,7 +61,7 @@
 			children = (
 				2E75AD2D2084248E00945729 /* addresses.txt */,
 				2E75AD302084248E00945729 /* BACKING_STORE.bin */,
-				2E75AD2E2084248E00945729 /* VMM_FIFO.c */,
+				2E75AD2E2084248E00945729 /* fifo.c */,
 			);
 			path = virtmem;
 			sourceTree = "<group>";
@@ -123,7 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E75AD312084248E00945729 /* VMM_FIFO.c in Sources */,
+				2E75AD312084248E00945729 /* fifo.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

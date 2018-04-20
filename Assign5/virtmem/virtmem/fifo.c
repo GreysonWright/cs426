@@ -1,6 +1,6 @@
 //
-//  VMM.c
-//  VMM
+//  fifo.c
+//  fifo
 //
 //  Created by Greyson Wright on 4/15/18.
 //  Copyright © 2018 Greyson Wright. All rights reserved.
@@ -25,7 +25,7 @@ typedef struct TLBRow {
 
 typedef struct TLB {
 	TLBRow store[TLB_SIZE];
-	int frequency[TLB_SIZE];
+	int index;
 } TLB;
 
 TLB *newTLB(void);
@@ -35,7 +35,6 @@ void insertPageTable(int, int, char *);
 int findTLB(unsigned char, TLB *);
 int max(int, int);
 void insertTLB(unsigned char, unsigned char, TLB *);
-int findMinTLB(TLB *);
 void printStats(int, int, int);
 
 int pageTable[FRAME_COUNT];
@@ -61,14 +60,10 @@ int main(int argc, const char **argv) {
         int logicalAddress = atoi(addressString);
         int offset = logicalAddress & 255;
         int logicalPage = (logicalAddress >> OFFSET_BITS) & 255;
-		int index = findTLB(logicalPage, tlb);
-		int physicalPage = 0;
+        int physicalPage = findTLB(logicalPage, tlb);
 		
-        if (index != -1) {
+        if (physicalPage != -1) {
             tlbHits++;
-			TLBRow *row = &tlb->store[index];
-			physicalPage = row->physical;
-			tlb->frequency[index]++;
         } else {
             physicalPage = pageTable[logicalPage];
             if (physicalPage == -1) {
@@ -90,10 +85,7 @@ int main(int argc, const char **argv) {
 
 TLB *newTLB(void) {
 	TLB *tlb = malloc(sizeof *tlb);
-	int i = 0;
-	for (; i < TLB_SIZE; i++) {
-		tlb->frequency[i] = 0;
-	}
+	tlb->index = 0;
 	return tlb;
 }
 
@@ -115,13 +107,12 @@ void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
 	pageTable[logicalPage] = physicalPage;
 }
 
-int findTLB(unsigned char logical_page, TLB *tlb) {
-	int index = findMinTLB(tlb);
-	int i = max((index - TLB_SIZE), 0);
-	for (; i < index; i++) {
+int findTLB(unsigned char logicalPage, TLB *tlb) {
+	int i = max((tlb->index - TLB_SIZE), 0);
+	for (; i < tlb->index; i++) {
 		TLBRow *row = &tlb->store[i % TLB_SIZE];
-		if (row->logical == logical_page) {
-			return i;
+		if (row->logical == logicalPage) {
+			return row->physical;
 		}
 	}
 	return -1;
@@ -132,24 +123,9 @@ int max(int a, int b) {
 }
 
 void insertTLB(unsigned char logical, unsigned char physical, TLB *tlb) {
-	int index = findMinTLB(tlb);
-	TLBRow *row = &tlb->store[index];
+	TLBRow *row = &tlb->store[tlb->index++ % TLB_SIZE];
 	row->logical = logical;
 	row->physical = physical;
-	tlb->frequency[index]++;
-}
-
-int findMinTLB(TLB *tlb) {
-	int minIndex = 0;
-	int i = 1;
-	for (; i < TLB_SIZE; i++) {
-		int currentFreq = tlb->frequency[i];
-		int minFreq = tlb->frequency[minIndex];
-		if (currentFreq < minFreq) {
-			minIndex = i;
-		}
-	}
-	return minIndex;
 }
 
 void printStats(int addressCount, int pageFaultCount, int tlbHits) {

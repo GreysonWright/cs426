@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2EB755E520863729007D2EAD /* VMM_LRU.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EB755E420863729007D2EAD /* VMM_LRU.c */; };
+		2EB755E520863729007D2EAD /* lru.c in Sources */ = {isa = PBXBuildFile; fileRef = 2EB755E420863729007D2EAD /* lru.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +26,7 @@
 		2E87DA5520864ABA00DFFCE6 /* addresses.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = addresses.txt; sourceTree = "<group>"; };
 		2EB755D820863708007D2EAD /* VMM_LRU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VMM_LRU; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB755E320863729007D2EAD /* BACKING_STORE.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = BACKING_STORE.bin; sourceTree = "<group>"; };
-		2EB755E420863729007D2EAD /* VMM_LRU.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = VMM_LRU.c; sourceTree = "<group>"; };
+		2EB755E420863729007D2EAD /* lru.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lru.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +61,7 @@
 			children = (
 				2E87DA5520864ABA00DFFCE6 /* addresses.txt */,
 				2EB755E320863729007D2EAD /* BACKING_STORE.bin */,
-				2EB755E420863729007D2EAD /* VMM_LRU.c */,
+				2EB755E420863729007D2EAD /* lru.c */,
 			);
 			path = VMM_LRU;
 			sourceTree = "<group>";
@@ -123,7 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EB755E520863729007D2EAD /* VMM_LRU.c in Sources */,
+				2EB755E520863729007D2EAD /* lru.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

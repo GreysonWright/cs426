@@ -1,6 +1,6 @@
 //
-//  VMM.c
-//  VMM
+//  fifo.c
+//  fifo
 //
 //  Created by Greyson Wright on 4/15/18.
 //  Copyright © 2018 Greyson Wright. All rights reserved.
@@ -107,11 +107,11 @@ void insertPageTable(int physicalPage, int logicalPage, char *backingStore) {
 	pageTable[logicalPage] = physicalPage;
 }
 
-int findTLB(unsigned char logical_page, TLB *tlb) {
+int findTLB(unsigned char logicalPage, TLB *tlb) {
 	int i = max((tlb->index - TLB_SIZE), 0);
 	for (; i < tlb->index; i++) {
 		TLBRow *row = &tlb->store[i % TLB_SIZE];
-		if (row->logical == logical_page) {
+		if (row->logical == logicalPage) {
 			return row->physical;
 		}
 	}
